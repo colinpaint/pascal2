@@ -1,0 +1,1351 @@
+{ Definition of possible host/target operating systems and machine
+  architectures.  These definitions are used to conditionalized
+  routines in the front end for each machine. }
+{<<<}
+{ NOTICE OF COPYRIGHT AND OWNERSHIP OF SOFTWARE:
+
+  Copyright (C) 1985, 1986, 1987, 1988, 1989 Oregon Software, Inc.
+  ALL RIGHTS RESERVED.
+
+  This program is the property of Oregon Software.  The program or
+  parts of it may be copied, modified, transferred, and used only as
+  provided under a signed license agreement with Oregon Software.
+  Any support purchased from Oregon Software does not apply to
+  user-modified programs.  All copies of this program must display
+  this notice and all copyright notices.
+
+  Release version: 0045 Level: 1
+  Processor: All
+  System: All
+
+  Pascal-2 Compiler Common Global Declarations
+
+ Last modified by KRIS on 21-Nov-1990 15:15:17
+
+ Purpose:
+Update release version for PC-VV0-GS0 at 2.3.0.1
+
+}
+{>>>}
+
+{$double - the compiler must have double precision reals}
+{$nopointer - ref() is used}
+
+{<<<}
+type
+  languages = (pascal, c, modula2, fortran77);
+  architectures = (pdp11, vax, iapx86, mc68000, ns32k, i80386);
+  opsystems = (vms, rsx, rsts, rt, unix, msdos, vdos, cpp, apollo);
+  unixflavors = (NoHost, UniPlus, UniPlusIII, UniPlusV, Masscomp, Xenix,
+                 Tandy, Sun, HP9300, Munix, Regulus, Wicat, CandD, Perpos, Ctix, Nti,
+                 Venix, UniFlex, VMEV2, UniPlusV2, Ncr, LMI, gmf, domainix,
+                 pcix, inix86, inix286, MSxenix, umax, atxenix, ultrix,
+                 morebsd, NEC, uspare5, uspare6, last_host);
+{>>>}
+
+{ get configuration parameters for this particular host and
+  target combination.  'config' defines such things as wordlength,
+  unit size (byte or word), whether or not disk cache is needed etc }
+{ Configuration parameters for this particular host and target combination}
+{<<<}
+const
+  bigcompilerversion = true; {runs in fewer passes if 'true', but is bigger}
+  scanalys = true; {phases scan and analys run together if 'true'}
+  travcode = true; {phases travrs and code run together if 'true'}
+
+  hostmachine = vax;
+  hostopsys = vms;
+
+  targetopsys = vdos;
+  targetmachine = mc68000;
+
+  unixtarget = nohost;
+  defunixtarget = nohost;
+  oldproctable = true; {we are using old-style procedure table}
+  language = pascal;
+  newdebugger = false;
+  register_return = false;
+  newscaninterface = false; {we are using old-style string table and tokens}
+  newtravrsinterface = false; {we are using old-style proctable and
+                               case table interface}
+  { Machine dependent parameters
+    The machine dependent parameters here apply to more than one pass.
+    There are also parameters in analys and scan which will have to be
+    modified when the compiler is moved }
+  reversebytes = true; {if target/host byte-order is backwards}
+  hostintlowbytefirst = true; {host integers have low order byte
+                               at lowest address}
+  packinghightolow = true; {the first field to be packed goes in the
+                            high order of the integer containing it}
+  modworks = false; {true if host mod operator always returns positive number
+                     as per the standard. Hashing algorithms in
+                     scan:identifier and travrs:hash save one instruction if
+                     this is true}
+
+  unitsize = 1; {size of an addressing unit}
+  wordsize = 4; {size of a word in addressing units}
+  machinesize = 4; {size of a natural unit in addressing units}
+  singlesize = 4; {size of a real in addressing units}
+  doublesize = 8; {size of a double real in addressing units}
+
+  longdoubsize = 8; {size of a long real (C)}
+  defaulttargetrealsize = singlesize; {default real size is single precision}
+  defaulttargetintsize = 4; {target integer size in HOST addressing units}
+  shorttargetintsize = 2; {16 bit integer size in TARGET addressing units}
+  defaultptrsize = 4; {size of a pointer in addressing units}
+  farptrsize = 4; {no difference for the 68k}
+  longptrsize = defaultptrsize; {only different on the iapx86}
+  longsize = 4; {size of a target long}
+
+  hostbytesize = 16#100; {number of elements in host byte}
+  hostwordsize = 16#10000; {number of elements in host word}
+  hostintsize = 4;  {host integer size in HOST addressing units}
+  maxintarray = 1; {number of integral host integers per target integer}
+
+  maxaddr = 16#FFFFFFFF; { 32 bits is max value of address on M68020 }
+  defaulttargetmaxint = 16#7FFFFFFF; { max value for integer on M68000 }
+  defaulttargetminint = 16#80000000; { min value for an integer on the M68000 }
+  shortmaxint = 16#7FFF; {Max value for a short integer}
+  shortminint = 16#FFFF8000; {min value for 16 bit integer}
+  maxusbyte = 16#FF; {maximum value for an 8-bit byte unit}
+  maxusword = 16#FFFF; {Max value for a 16-bit value}
+  maxusint = 16#FFFFFFFF; { max unsigned integer for this implementation }
+  maxlong = defaulttargetmaxint; {max value in a long}
+  maxautoindex = 3; {Highest power of two used with indexed mode.
+                     Procedure "onearrayindex" in body uses a zero for 68000}
+  maxexpon = + 39; {max exponent which can possibly fit in a real}
+  minexpon = - 39; {min exponent which can possibly fit in a real}
+  maxdoubleexpon = + 309; {max exponent which can fit in a double prec. real}
+  mindoubleexpon = - 309; {min exponent which can fit in a double prec. real}
+  niladdressvalue = 1; {numeric value of NIL}
+  maxword = shortmaxint; {maximum value for a 16-bit signed word}
+  minword = - maxword; {minimum value for a 16-bit signed word}
+
+  hostfileunits = 1; {host computer file units per addressing unit}
+  maxrealwords = 4; {number of words in a double precision real number}
+  hostfilelim = 255; {max integer in host file unit}
+
+  maxlevel = 15; { Max procedure nesting level }
+
+  { NOTE: these are set up for using the old-style string table.  The
+    new style uses new to create blocks of chars on the heap.  The
+    correct figures would be:  stringblockmax = ???, stringtablesize = 200000,
+    stringspan = 1023. }
+  stringtablesize = 200000; {max characters in all identifiers}
+  stringblocksmax = 0; {max blocks -1 for string table}
+  stringspan = stringtablesize; {bytes per block - 1 in string table}
+
+  hashtablesize = 12497; { max number of distinct identifiers }
+  hashspan = 255; {hash entries per block - 1 in hash table}
+  hashblocksmax = 19; {max blocks - 1 for hash table}
+  proctablespan = 0; {proc entries per block of proctable}
+  procblocksmax = 0; {max blocks in proctable}
+
+  { Proctablesize should be set to the max number of procedures,
+    irregardless of new/old-style proctable.  Old_proctablesize
+    should be set 0 if new-style proctable used, proctablesize
+    if old-style. }
+  proctablesize = 1023; { max number of procedures }
+  old_proctablesize = proctablesize; { max number in old-style proctable}
+  vartablesize = 4096; {max number of external and static refs}
+  cseregions = 0 {proctablesize}; {max number of cse regions saved}
+  undeftablesize = proctablesize; { max number of forward procedures/functions }
+  maxswitchvalue = 127; { i.e. LISTALL = 127 $LIST comments }
+  switchtablesize = 200; { max number of switches allowed in program }
+  errortablesize = 200; { max number of errors before we give up hope }
+  listtablesize = 200; { max number of listing control switches }
+  maxprocnamelen = 15; {max characters in assembly proc name}
+  maxnamestring = 16; {max characters in a name string}
+
+  { Use/define stuff. }
+  maxvarentries = 63; {max number of entries less one in an external var block}
+  maxvarptrs = 32; {number of pointers in vartable}
+
+  defdatasection = 15; { default data section (used by csi) }
+
+  maxdebugrecord = 14; {max number-1 of debug records in a diskblock}
+  debugfileptrmax = 999; {max number-1 of debug file pointers}
+  debugfilemax = 15000; {max number of debug records}
+
+  maxstmtrecord = 31; {max number-1 of stmt records in a diskblock}
+  stmtfileptrmax = 999; {max number-1 of stmt file pointers}
+  stmtfilemax = 32000; {max number of stmt records}
+
+  { Define the maximum numbers of scalars and reals to assign to registers }
+  assignreg = 3;
+  assignptrreg = 2;
+  assignrealreg = 3;  { 68020/68881 only }
+
+  maxtrackvar = 30; {maximum number of register candidates for a block}
+  regtablelimit = 31; {last entry in register candidate hash table. MUST be
+                       greater than maxtrackvar. Also hashing works fastest
+                       if this is 2**N -1 type of number}
+
+  { Define the register mask, used by the Unix debugger }
+  maxgenregistermask = 7;
+  maxptrregistermask = 7;
+  maxrealregistermask = 7;
+
+  suffixlength = 4; {max length of a filename suffix}
+  maxextension = 4; {max length of a default extension}
+  cmdlinelength = 132; {max length of a command line}
+  filenamelen = 100; {max length of a filename}
+
+  sourcedepth = 8; {source + 7 levels of include}
+  linelen = 160; {max length of input line}
+  list_line_width = 132; {max width of a list output line}
+  max_string_len = linelen;
+
+  exitstatus = 16#10000004; {2^28+4 severe error, no message: VMS exit value}
+  diskbufsize = 511; { number of bytes in a disk buffer }
+  doublediskbuflimit = diskbufsize; {size of cache blocks}
+  worddiskbufsize = 255; { number of words in a disk buffer }
+  keysize = 500; { number of concurrent active nodes in travrs/code tree}
+
+  realfolding = false; {turns on real folding}
+  rangetracking = true; {turns on range tracking}
+  maxparambytes = maxaddr {defaultptrsize}; {value params longer than this are
+                                   passed by reference rather than copied}
+  optimizeinvariants = true; {turns on removal of invariants from loops}
+
+
+  {<<<}
+  {disk cache parameters}
+  {Virtual memory sizing constants}
+  {these are all HOST, not target dependent}
+  { Three possibilities exist:
+    1. bigcompiler = false, needcaching = true.
+       This is the "wimp computer" case.  Data structures are false, and
+       the various maxnodeinblock and lowblock constants must be hand
+       configured so that each block fits in a disk block and that global
+       space is most efficiently used.
+
+    2. bigcompiler = false, needcaching = false.
+       Caching is not done, but the structure is maintained and dynamically
+       extended as needed.  Basically a compromise, for systems which don't
+       support an extremely large address space.  "memory overflow" may
+       occur before the entire structure is filled and maximum program size
+       may be limited by available memory space.
+       In this case, blocksin structure is still used but each block does
+       not need to fit in a disk block.
+
+    3. bigcompiler = true, needcaching = false.
+       Caching is not done, and read/writeaccess calls are replaced by
+       use of the "ref" function directly into a large array.  Used for
+       systems with lots of (usually virtual) memory.  FAST!
+  }
+  {>>>}
+  needcaching = false;
+
+  maxstringblks = 400; {max number of string blocks}
+  tablesize = 16383; {max number of types and names}
+  tnodetablesize = 12000; {maximum nodes in tree}
+  cnodetablesize = 16383; {max number of nodes per block}
+
+  {<<<}
+  { Number of nodes per virtual memory block for each pass:  These
+    numbers are defined by the size of tableentry (hdra), node (hdrt),
+    and node (hdrc) if needcaching is true.  If needcaching is false,
+    they are arbitrary, so we make them some 2^n-1 for fast code.
+    If bigcompilerversion is true, however, we only use one block,
+    and the value can be anything that's big enough. }
+  { The following stuff is meaningful only if bigcompiler = false, and
+    should be "1" otherwise.
+  }
+  {>>>}
+  analysmaxnodeinblock = 1 {63};
+  travrsmaxnodeinblock = 1 {256};
+  codemaxnodeinblock = 1 {259};
+
+  {number of static virtual memory blocks for each pass}
+  lowanalysblocks = 1 {9};
+  lowtravrsblocks = 1 {18};
+  lowcodeblocks = 1;
+
+  {make these "2" if bigcompiler, calculate otherwise}
+  amaxblocksin = 2 {131}; { max number of blocks in heap+maxblockslow }
+  tmaxblocksin = 2 {64}; {max blocks allocated to node file buffers}
+  cmaxblocksin = 2 {127}; {max blocks ever allowed}
+
+  { These three constants are meaningful only if bigcompiler = true. Make them minimal otherwise. }
+  bigtablesize = tablesize; {minimum for this one is 1}
+  bigtnodetablesize = tnodetablesize; {minimum for this one is 1}
+  bigcnodetablesize = cnodetablesize; {minimum for this one is 4}
+
+  { Blocking definitions for environment files }
+  tableentriesperblock = 16;
+  proctableentriesperblock = 50;
+  hashtableentriesperblock = 84; {based on 6 bytes per entry}
+  switchesperblock = 255; {based on two bytes per entry}
+
+  { Scan parameters }
+  fastread = true;   {use the fast library routine p_rdsfst}
+  stringroundoff = 2; {string length alignment constant}
+
+  { Analys parameters }
+  charsetsize = 256; {number of elements in the character set}
+  maxsetord = 255; {max ord allowed in a set}
+  setvaluebytes = 31; {maximum set size (bytes), for set values}
+  setalign = 2; {alignment requirement for a set}
+  intalign = 2; {alignment for an integer}
+  shortintalign = 2; {alignment for a short integer}
+
+  charsize = unitsize; {size of a character}
+  charalign = unitsize; {alignment for a character}
+
+  longintsize = 4; {size of largest integer}
+  shortintsize = 2; {size of a medium size integer}
+
+  scalarsize = unitsize; {size of a small scalar}
+  scalaralign = unitsize; {alignment for small scalars}
+  realalign = 2; {alignment of real values}
+  doublealign = 2; {alignment of double real values}
+  ptralign = 2; {alignment requirements for a pointer}
+  defreturnlinksize = 8; {size of a procedure return link in addressing units
+                         (includes dynamic link on 68k)}
+  defextreturnlinksize = 8; {size of a procedure return link in addressing
+                            units (includes dynamic link on 68k) for externals}
+  procparamsize = 8; {size of a procedure parameter in addressing units}
+  staticlinkoffset = 4; {position of static link in saved registers area}
+  stackalign = 2; {alignment requirement for the stack}
+  bitsperunit = 8; {bits per address unit}
+  bitsperfileunit = 8; {bits per file allocation unit}
+  packingunit = 2; {maximum size used for packing}
+  maxbit = 15; {One less than "bits-per-word"}
+  maxalign = 16; {largest alignment value possible}
+  pdpalign = 2; {pdp-11 compatible alignment value}
+  stringeltsize = 8; {bits per string element}
+  stringalign = 2; {alignment for a string}
+
+  max_bitfield = 32; {max size of a bitfield (C)}
+  unsignedprefered = false; {prefer to unpack unsigned fields}
+  freemodwithdiv = true; {true if some flavor of div returns a remainder}
+
+  { Virtual memory sizing constants These are all HOST, not target dependent }
+  apanicspace = 500; { if memory gets this low, ouch! }
+  arequiredspace = 2500; { minimum of 2500 bytes of stack }
+  aexcessivespace = 3000; { but we need no more than this }
+
+  { symbol table size parameters for analys }
+  magicblocksize = 32; { see 'decreasebuffers' for an explanation }
+  totalscopes = 2047; {max number of scopes allowed in whole program}
+  deadscope = totalscopes; {max scope id, indicates not accessable}
+
+  oprnddepth = 32; {size of operand stack (arbitrary)}
+  fordepth = 32; {size of for stack, number of nested for loops}
+
+  {<<<}
+  { Travrs parameters }
+  { The following values are used determine the costs of alternative
+    case constructs.  For example, they are used to decide when to
+    implement the case as a jump table and when to implement it as tests
+    and branches.  You can determine them on the basis of time, space, or
+    some combination thereof.  If space is the criterion, the size of the
+    instructions required in addressing units are the obvious values. }
+  {>>>}
+  splitcost = 7; {The average cost of a compare and jump}
+  errdefaultcost = 4; {The cost of an error trap}
+  casedefaultcost = 4; {The cost of a jump to the default case}
+  casetablecost = 22; {overhead cost of a case jump table}
+  caselabcost = 2; {cost of each label in a jump table}
+  contextdepth = 20; {maximum number of nested contexts}
+  maxwithdepth = 32; {maximum number of nexted "withed" records}
+
+  { Virtual memory sizing constants These are all HOST, not target dependent }
+  trequiredspace = 3500; {required stack space in bytes}
+  texcessivespace = 4000; {if this much space, create more node buffers}
+  tpanicspace = 500; {if only 500 bytes, we are indeed in trouble}
+
+  nodehashsize = 67; {number of buckets in node hash table}
+
+  maxrefcount = 1023; {max number of refs to a node}
+  maxcost = 127; {max cost value considered}
+
+  divtarget = - 2; {result is a future dividend}
+  multarget = - 1; {result is a future multiplicand}
+
+  { Code parameters }
+  {The following constants size the pass and the max block size for compiling}
+  labeltablesize = 1000; {max number of labels per block}
+  lowesttemp = - 20; {lowest temp key which can be allocated}
+
+  { Virtual memory sizing constants  These are all HOST, not target dependent }
+  crequiredspace = 2000; {min stack + heap space after virtual mem. (words)}
+  oktouse = 1000; {amount of remaining space we can use for branch chains}
+
+  {predefined data stored off gp.  Used to communicate with support library. }
+  stacklimit = 0; {used for stack overflow checking}
+  filevar = 4; {current file stored here for support lib i/o calls}
+  restorestack = 8; {set to initial value of stack}
+  supportlibdata = 12; {points to support lib private data}
+  globalbase = 16; {offset of first global variable}
+
+  {Entry points for read and write support routines.  Name is P$nn.}
+  {note:  these use default files, entry + 2 is specified file}
+  rdln = 16; {readln for a text file}
+  rdstg = 12; {read a string from a text file}
+  rdnm = 4; {read an integer from a text file}
+  rdch = 0; {read a character from a text file}
+  rdrl = 8; {read a real number from a text file}
+  rddr = 11; {read a double real number for a text file}
+  wrln = 36; {writeln for a text file}
+  wrnm = 24; {write an integer to a text file}
+  wrch = 20; {write a character to a text file}
+  wrrl = 28; {write a real number to a text file}
+  wrdr = 29; {write a double real number to a text file}
+  wrstrg = 32; {write a string to a text file}
+  wrbo = 110; {write a boolean variable to a text file}
+
+  { constant definitions to support the PutObj module: }
+  firstESD = 17; { first available External Symbol Definition index }
+  lastESD = 256; { this value is 1 greater than the maximum assignable index
+                  so that nextESD will never be out of ESDrange }
+  {note: a load module can have at most 238 external definitions/references! }
+
+  oursection = 13; { section in which Pascal code resides }
+  diagsection = 14; { section for diagnostic code }
+  linknamesize = 10; { max length of an external name }
+  linknameused = 10; { length of external names actually used }
+  maxtempbuffer = 32; { number of words in tempbuffer }
+  maxrelfile = 255; { number of words in relfilebuffer }
+
+  checkmsg = ' consistency checks detected'; { output only if internal errors  }
+{>>>}
+{<<<}
+type
+{ unsignedint = unsigned (extended) integer on TARGET
+  addressrange = HOST dependent definition (watch out for variant records!)
+  targetint = signed integer on TARGET
+  targetaddress = address on TARGET
+}
+
+  unsignedint = 0..maxusint; {range for unsigned values}
+  addressrange = 0..maxaddr; {supported addressing space (bytes)}
+  targetint = integer;
+  targetaddress = addressrange;
+  unsignedword = 0..maxusword;
+{>>>}
+{<<<}
+const
+  maxstandardlabel = 9999; {maximum value for a Pascal label, cast in cement
+                            by the ISO standard.}
+  maxstrlen = 255; {maximum number of chars in a string, consistent across all
+                    implementations of Pascal-2}
+{>>>}
+{<<<}
+type
+  { NEW string table definitions }
+  string_len = 0..max_string_len; {for holding string data}
+  string_data = packed array [1..max_string_len] of char;
+  string_buffer =
+    record {contains text of a string}
+      len: string_len; {length of data}
+      data: string_data; {actual data}
+    end;
+
+  stringindex = 0..stringtablesize; {index into string table}
+  stringtableindex = stringindex; {a synonym used elsewhere}
+  stringarray = packed array [0..stringspan] of char; {defines string table}
+  stringptr = ^stringarray; {used because stringtable dynamically created}
+  stringbasearray = array [0..stringblocksmax] of stringptr;
+
+  double = real; {should be double precision within the compiler}
+
+  natural = 0..32767; {a useful counter}
+
+  hostfilebyte = 0..hostfilelim; {addressing unit of host file}
+
+  { list of overlays called in 'cheating' fashion from root }
+
+  overlays = (xcloses, xopenl, xbody, xcstruct, xclosel, xgenblk, xputcode,
+              xpanic, xopentree, xclosetree, xcsi, xscan, xanalys, xtravrs,
+              xlist, xcode, xopenenv, xopennext, xopens);
+
+  {[f-]}
+  switch = (noswitch,      {start of the switches}
+            awaremode,     {specify floating coprocessor mode}
+            bstep,         {handles 80186 bstep problems}
+            bytealloc,     {put ints into bytes if they fit}
+            caseswitch,    {makes Pascal compiler case sensitive}
+            classsw,       {Pascal-F class}
+            code_switch,   {???}
+            codeconst,     {put constants in code segment}
+            commonvars,    {emit define vars as common}
+            cplusplus,     {(C) compile C++}
+            checkout,      {(C) generate error checks}
+            compatibility, {(C) degrade error checking}
+            cpu68000,      {Specify the CPU}
+            cpu68020,
+            cpu8086,
+            cpu80286,
+            datesw,        {Pascal-F date}
+            debugging,     {generate high-level debugging interface code}
+            defineswitch,  {generate an environment module}
+            details,       {print internal details in test mode}
+            doublereals,   {(Pascal) use long reals}
+            editlist,      {(MS-DOS) special error format for BRIEF}
+            eis,           {(PDP-11) EIS floating point}
+            enumints,      {(C) allocate all enum vars ints}
+            environswitch, {read an environment module}
+            versionswitch, {display compiler version information}
+            expandfloat,   {(C) all floating point done in double}
+            extensions,    {(C) enable any special extensions}
+            fis,           {(PDP-11) FIS floating point}
+            floatsafe,     {lord only knows but I doubt he cares}
+            fpc68881,      {(68K) code for 68881}
+            fpp,           {(PDP-11, MS-DOS) FPP floating point}
+            framepointer,  {use dedicated frame pointer}
+            genmask,       {specify code optimization options}
+            groupown,      {(iAPX-86) allocate own section in DGROUP}
+            ident_switch,  {???}
+            indexcheck,    {(Pascal) generate index range checks}
+            largecode,     {(iAPX-86) far procedure calls}
+            largemodel,    {(iAPX-86) far pointers}
+            level0,        {(Pascal) disable conformant arrays}
+            listcount,     {turn listing on}
+            listerrors,    {list only lines with errors}
+            listexpansion, {list expanded macro lines}
+            listincludes,  {list include text}
+            librequest,    {include library request in output}
+            longlib,       {(68K) long library calls}
+            mainbody,      {(Pascal) this module contains a main program}
+            mathcheck,     {generate overflow checking}
+            mergelisting,  {merge assembly and source listing}
+            modstrings,    {(C) makes strings modifiable}
+            module_switch, {???}
+            multidef,      {(Pascal) allow multiple use/define for one var}
+            nearfarproc,   {determines near/far attribute of external procs}
+            nilcheck,      {generate pointer check code}
+            oldpacking,    {use old packing algorithm for compatibility}
+            oldreswords,   {(Pascal) don't define USE/DEFINE/SHARED}
+            outputebcdic,  {generate the assembly code in EBCDIC}
+            outputmacro,   {generate assembly code}
+            outputobj,     {generate object code}
+            outputprep,    {generate the preprocessor output}
+            outputprepstd, {generate the preprocessor output to standard out}
+            own,           {place following globals in an own section}
+            pascal1,       {generate Pascal-1 compatible code}
+            pascalf,       {accept Pascal-F syntax}
+            pdp11data,     {(VAX) allocate PDP-11 compatible data}
+            pic,           {(VAX, 68K) generate position independent code}
+            profiling,     {generate a statement count profile}
+            rangecheck,    {generate subrange checking code}
+            refnosw,       {Pascal-F refno}
+            romconsts,     {(C) put constants in a section for ROM}
+            runxenix,      {(i386) running Xenix+Intel obj, not ???}
+            sectionsw,     {Specify the code section}
+            sharecode,     {(Apollo)}
+            shortintegers, {use short, 16 bit integers}
+            shortsectsw,   {specify the code as a short section}
+            signedchars,   {(C) default to signed characters}
+            sim,           {(PDP-11) generate simulated floating point}
+            stackcheck,    {generate stack overflow code}
+            standard,      {disallow extensions (C, strict standard)}
+            statistics,
+            stmtnumbers,   {insert statement numbers in assembly output}
+            structstand, {assume standard interface for structure return vals}
+            structstatic, {place structure return in static var}
+            symboltable,   {generate a symbol table file}
+            targdebug,     {(C) generate target debug code}
+            targprofile,   {(C) generate target profile code}
+            tblock,        {specify a procedure number}
+            test,          {generate output for testing compiler}
+            timing,        {time compiler passes}
+            truncatesw,    {truncate intermediate operations where possible}
+            tswitch0,      {general purpose debugging switches}
+            tswitch1,
+            tswitch2,
+            tswitch3,
+            typesw,        {Pascal-F module type}
+            verbose,       { Make various compilers obnoxiously noisy }
+            vectextref, {virtual vectors are extref}
+            vectextdef, {virtual vectors are extdef}
+            versionsw,     {(VERSAdos) specify version}
+            versnsw,       {Pascal-F version}
+            usebsd42lib,   {(UNIX) controls which unix library to use}
+            usesysVlib,
+            walkback,      {generate walkback code}
+            windows,       {generate prologue/epilogue code for MS-Windows}
+            finalswitch);
+
+  {[f+]}
+
+  { Switch table entries. One used to log each embedded switch }
+
+  switchentry =
+    packed record
+      s: switch; {switch which was encountered}
+      v: - maxswitchvalue..maxswitchvalue; { bump current value by this much }
+      mlow, mhi: integer; { marker into current intermediate file }
+    end;
+
+  switchcounterarray = packed array [switch] of shortint;
+  switcheverplusarray = packed array [switch] of boolean;
+
+  standardids = ( { Pascal junk }
+                                 integerid, shortintid, realid, doubleid,
+                                 charid, booleanid, trueid, falseid, textid,
+                                 inputid, outputid, writeid, writelnid,
+                                 readid, readlnid, putid, getid, seekid,
+                                 resetid, rewriteid, closeid, breakid, newid,
+                                 disposeid, packid, unpackid, pageid, timeid,
+                                 absid, sqrid, sinid, cosid, expid, lnid,
+                                 sqrtid, arctanid, oddid, eofid, eolnid,
+                                 truncid, roundid, ordid, chrid, succid,
+                                 predid, sizeid, bitsizeid, loopholeid,
+                                 maxintid, minintid, refid, noioerrorid,
+                                 ioerrorid, iostatusid, deleteid, renameid,
+                                 emtid, forwardid, externalid, nonpascalid,
+                                 fortranid, interruptid, insertid, strid,
+                                 valprocid, copyid, concatid, lengthid, posid,
+                                 deletestrid, snglid, dblid, upperid, lowerid,
+  { Pascal-F only }
+                                 shortunsid, longintid, longunsid, toshortid,
+                                 toshortuid, tolongid, tolonguid, nearid,
+                                 farid,
+  { Modula-2 junk }
+                                 capid, exclid, inclid,
+  { C junk }
+                                 acosid, asinid, atanhid, ceilid, copysignid,
+                                 coshid, divid, floorid, fabsid, frexpid,
+                                 isnanid, ldivid, ldexpid, labsid, logid,
+                                 log10id, logbid, modfid, powid, sinhid,
+                                 tanid, tanhid, memchrid, memcmpid, memcpyid,
+                                 memmoveid, memsetid, strcatid, strchrid,
+                                 strcmpid, strcpyid, strcspnid, strlenid,
+                                 strncatid, strncmpid, strncpyid, strpbrkid,
+                                 strrchrid, strspnid, strstrid, varargsid,
+                                 mainid,
+  { 68881 only }
+                                 facosid, fasinid, fatanid, fatanhid, fcoshid,
+                                 fetoxm1id, fgetexpid, fgetmanid, fintid,
+                                 flog10id, flog2id, flognp1id, fmodid,
+                                 fmovecrid, fnopid, fremid, fscaleid,
+                                 fsgldivid, fsglmulid, fsincosid, fsincos2id,
+                                 fsinhid, ftanid, ftanhid, ftentoxid,
+                                 ftwotoxid, setfpcrid, readfpcrid);
+
+  { all detected compile time errors.  currently a union of all languages
+    and possibilities.  will hopefully be replaced later with a more sane
+    scheme of language-dependent warning files! }
+
+  warning = (firstwarning, linetoolong, badchar, missingdigits, badinteger,
+             badexpon, toomanyerrors, zerostring, stringtableoverflow,
+             levelerr, doteoferr, extraenderr, extrastmterr, extraprocerr,
+             baddirective, deepinclude, badlabelnest, garbageerr,
+             blockstarterr, scrambledblkerr, nosemierr, blockenderr,
+             nobeginerr, noenderr, stmtenderr, nountilerr, badelseerr,
+             nothenerr, nocommaerr, nocolonerr, nooferr, caselabelerr,
+             nodoerr, nobecomeserr, nodowntoerr, caseelseerr, novarerr,
+             badlabelerr, norparerr, badparamerr, badcolonerr, notypenameerr,
+             nosemiprocerr, nofuncass, badexprerr, nooperr, nooprnderr,
+             badindexerr, norbrackerr, badrparerr, noeqlerr, badconsterr,
+             nosemiheaderr, baddeclerr, badtypesyntax, nolabelerr,
+             nolbrackerr, nodotdoterr, nolparerr, duplicateident, tablefull,
+             undeftablefull, proctablefull, undefidenterr, badsubrange,
+             badindex, badsetbase, badcasetyp, badcaselab, duplicatetag,
+             duplabeldef, labnotpredef, badlabeldef, badtagerr, badfunctype,
+             badfuncassign, missingforindex, modifiedfor, badprocfunc,
+             badassign, norecordident, dupfwdparam, dupfwdresult, dupforward,
+             fwdprocfuncerr, fwdfuncprocerr, badxdef, recordexpected,
+             arrayexpected, ptrexpected, farptrexpected, toomanyargs,
+             toofewargs, paramtypeerr, booleanexpected, badarithtype,
+             signedseterr, badreloprnds, badrealtoint, badassignment,
+             typesincomp, compilerwritererr, nostrictinclusion, badinoprnds,
+             badfortype, badforlimit, badcasetype, badcaselabeltype,
+             indexincomp, badforvar, badprocparam, badfuncparam, varparamerr,
+             badsetexpression, cantpack, badformat, illegalformat,
+             badwritearg, nowritearg, badfunctionarg, nofilevar, badreadtype,
+             noreadarg, nostringerr, filenameerr, nofieldtype, badnewlabel,
+             noptrvar, labelundef, fwdundef, typeundef, octalconst, badoctal,
+             nondecimalconst, badradix, wantvarname, nofilefile, dupcaselabel,
+             unassigned, indexerror, rangeerror, overflow, bigarrayerr,
+             badorigin, novaluefile, dontassignfile, longstring, bigsetbase,
+             nottextfile, obsoletecomments, typenotallowed, progexpected,
+             notimplemented, badmodop, badpackconform, confinconsistent,
+             badconfactual, bigrecorderr, bigblockerr, biglabelerr, badnumber,
+             badfornestref, badcasetags, nameundef, filenotdeclared,
+             inputnotdeclared, outputnotdeclared, novarianttag, notlevel0,
+             toomanyelements, eofincomment, baddouble, manyscopes, baduniv,
+             badstringindex, stringoverflowerr, bodyfounderr, manyenviron,
+             badenviron, badoptions, {LIST} baddefine, badcase, baddbltoreal,
+             toomanyextvars, badsharedvar, badusedefinevar, badcvtfunc,
+             badinterruptproc, unsupportedforvardecl, badmultidef, {LIST}
+             chartoolong, badpragma, badpragval, macroredef, manymacroparms,
+             noidenterr, badconcat, badmacroflag, deepmacronest, exprtoomuch,
+             badppexpr, nomatchrpar, nocolonop, noquesterr, eofskipping,
+             ppbadelse, divzeroerr, ppextra, ppbadendif, badppdir, badlinedir,
+             noundef, badfilename, macrotoolong, usererror, badtypeerr,
+             duptypeerr, storenotok, undefsize, badbftype, bftoobig,
+             norcurlerr, badconexpr, nodeclerr, onlyonefunc, badfuncstore,
+             noexprerr, badidentlist, incomlink, baddecl, noargname,
+             nofieldident, badlinkage, incomtype, twoinits, vartablefull,
+             ambigtypesize, doubdefault, notinsw, badcontin, badbreak,
+             nonvoidret, mixedreturns, nostaterr, nolcurlerr, nowhileerr,
+             novoidval, cantassign, nostructype, badcast, badptrsub, notconst,
+             noenumerr, nostructerr, nobitaddr, noregaddr, badinit,
+             scalarexpected, emptyfile, notdfunc, badifnest, lastwarning);
+
+  { Reasons for aborting a compilation}
+  abortwarning = (outofmem, undeltemps, muchcode, manylabels, manyplabels,
+                  manytemps, manynodes, builderror, manykeys, walkerror,
+                  interntemp, inconsistent, badadjust, manyexterns,
+                  wrongversionenv, badrelfile, manynonlocals, perposdump);
+
+  { Various supported calling sequences }
+
+  linkages = (pascal2call, nonpascalcall, fortrancall, interruptcall,
+              modulebody, definitionbody, implementationbody);
+
+  { subranges for various tables, values are documented above }
+
+  levelindex = 0..maxlevel;
+  columnindex = 0..linelen;
+  hashindex = 0..hashtablesize;
+  switchindex = 0..switchtablesize;
+  errorindex = 0..errortablesize;
+  listindex = 1..listtablesize;
+  proctableindex = 0..proctablesize;
+  var_index = 0..vartablesize;
+  cseregionindex = 0..cseregions;
+  labelrange = 0..32767; {range of generated internal labels}
+  pascallabelrange = integer; {range of pascal label numbers}
+{>>>}
+
+{ include dbghdr }
+{<<<}
+{ Common ODB/PDB version.  Gross, ugly, partially conditionalized.  I've
+  tried to note the ODB-only and PDB-only things, but have certainly missed
+  some.  When PDB goes away entirely, a lot can be cleaned out of this file,
+  files.pas, and analys.
+
+  Common definitions used by compiler and debugger.  This header file
+  defines the interface between these two programs.  There is a complication
+  by the fact that there are two debuggers: the DEC operating system
+  debuggers and the Unix debuggers. The interface consists of two files,
+  a symbol table file (filled with debugrecords),and a statement map file
+  (filled with stmtrecords).  This second file is completely different for
+  the two debuggers. In addition, for the DEC operating system debuggers,
+  special code not described in this file is emitted for each statement and
+  procedure prologue.
+}
+{>>>}
+{<<<}
+const
+  p_maxregmask = 31;
+  p_dbg_syp_span = 29; {blocking span for debug records}
+  p_dbg_str_span = 1023; {block span for string table}
+  p_dbg_hash_span = 14; {span of bucket table}
+
+  { Standard record positions in p_dbgfile }
+
+  p_init_idx = 1;
+  p_globhash_idx = 2;
+  p_bool_idx = 3;
+  p_char_idx = 4;
+  p_int_idx = 5;
+  p_shortint_idx = 6;
+  p_real_idx = 7;
+  p_double_idx = 8;
+  p_dummysubrange_idx = 9;
+  p_text_idx = 10;
+  p_nil_idx = 11;
+
+
+  { define size of hash table used to speed debugger access to names }
+
+  debughashtablesize = 27; { currently a bucket on ['A'..'Z','$','_'] }
+
+  debugsymbolmax = 32;
+{>>>}
+{<<<}
+type
+  debugrecordtype = (identdesc, symboldesc, formdesc
+  );
+
+
+  p_regmask = packed array [0..p_maxregmask] of boolean;
+
+  p_strtblindex = 0..16#FFFF;
+
+  p_symbolindex = targetint;
+
+
+  p_mapindex = 0..16#FFFF;
+
+
+
+  { built-in types }
+
+  types = (subranges, fields, variantlabs, arrays, conformantarrays, strings,
+           sets, files, ptrs, scalars, ints, bools, chars, reals,
+           doubles, fptrs, funcs, procs, stringliterals, flexarrays, opaques,
+           bytes, words, none);
+
+  { register descriptions for the Unix debuggers }
+
+  genregmask = packed array [0..maxgenregistermask] of boolean;
+  ptrregmask = packed array [0..maxptrregistermask] of boolean;
+  realregmask = packed array [0..maxrealregistermask] of boolean;
+
+  { symbol table entry types }
+
+  nametype = (noname, varparam, param, funcparam, procparam, confparam,
+              varconfparam, boundid, typename, constname, scalarname, varname,
+              fieldname, procname, funcname, forwardproc, forwardfunc,
+              externalproc, externalfunc, undeftypename, undefname,
+              standardproc, standardfunc, directivename, labelname);
+
+  { Kinds of variable allocation}
+
+  allockind = (normalalloc, genregister, ptrregister, realregister, absolute,
+               ownalloc, pointeralloc, sharedalloc, usealloc, definealloc,
+               staticalloc);
+
+  { identifier name as written to symbol table file }
+
+  file_addr = unsignedint;
+
+  symbolname = packed array [1..debugsymbolmax] of char;
+
+  debughashindex = 0..debughashtablesize;
+
+  realarray = packed array [1..maxrealwords] of 0..maxusword; {to hold
+    representation of a real}
+
+  { symbol table entry description }
+
+  debugrecord =
+    record
+      case kind: debugrecordtype of
+
+      identdesc:
+
+        (
+         { PDB identifier }
+         identchars: symbolname; {user supplied name}
+         chainoffset: p_symbolindex; {previous symbol name that has same
+                                      first character}
+         );
+        symboldesc:
+          (
+           { for now, the following definitions have PDB-required 'typeindex',
+             'consttype' etc fields.  This wastes space for ODB but I'm
+             figuring PDB will go away eventually and I didn't want to make
+             an analys.pre.
+           }
+           name: 0..255; {analogous to name field in analys, PDB only}
+           case namekind: nametype of
+             typename: (typeindex: p_symbolindex {pointer to formdesc} );
+             constname:
+               (consttype: p_symbolindex {type pointer, PDB only} ;
+                case constform: types of {value}
+                  arrays, fields:
+                    (constoffset: unsignedint;
+                     constlength: unsignedint);
+                  ints, chars, bools, scalars:
+                    (i: targetint;
+                     extendedint: boolean);
+                  reals, doubles: (r: realarray);
+                  ptrs: (nilpointer: targetint {targetptr} ));
+             varname, param, varparam, fieldname, procparam, funcparam,
+             confparam, varconfparam, boundid:
+               (offset: targetint; {runtime addr}
+                length: targetint; {data length in units}
+                varalloc: allockind; {how this variable is allocated}
+                vartype: p_symbolindex {data type of item}
+                 );
+             procname, funcname:
+               (functype: p_symbolindex; {return type of function}
+                funclen: targetint; {returned data length of function}
+                funcoffset: targetint; {returned value offset}
+                id: targetint; {symbols for this proc have name field set to
+                                id}
+                firststmt: targetint; {first statement number for this block}
+                laststmt: targetint; {last statement for this block (ODB only)}
+                firstname, lastname: p_symbolindex; {symbol table pointers}
+                level: targetint; {static nesting level}
+                paramsize: targetint; {size of parameters}
+                blocksize: targetint; {size (in units) of local storage}
+                entryaddress: targetint; {entry point filled in by code}
+
+                { PDB has one mask set for each kind of register }
+                genregssaved: genregmask; {general registers saved on entry}
+                ptrregssaved: ptrregmask; {pointer registers saved on entry}
+                realregssaved: realregmask; {real registers saved on entry}
+                nextprocedure: p_symbolindex; {link to next procedure in file}
+               ));
+
+        formdesc:
+          (packedflag: boolean; {true if user said 'packed'}
+           bitaddress: boolean; {true if item is bit, not unit accessed}
+           size: targetint; {size in units or bits}
+           case typ: types of
+             subranges:
+               (lowerord, upperord: targetint; {was declared
+                                                lowerord..upperord}
+                extended: boolean; {true if extended representation}
+                parenttype: p_symbolindex {points to base type} );
+             scalars:
+               (lastord: targetint; {lower value is implied = 0}
+                firstscalar: p_symbolindex {refers to first name in list} );
+             fields:
+               (fieldid, fieldlevel: targetint; {access info}
+                tagfield: p_symbolindex; { 0 = no tag, otherwise record index}
+                nextvariant: p_symbolindex; {next variant record at this level}
+                firstlabel: p_symbolindex; {head of label chain describing this
+                                    variant}
+                firstvariant: p_symbolindex; {first subvariant defined by case at
+                                      level}
+                firstfield, lastfield: p_symbolindex {access info} );
+             arrays, conformantarrays:
+               (indextype: p_symbolindex; {array [indextype] of elementtype}
+                elementtype: p_symbolindex;
+                lowbound: p_symbolindex; {first of the bound identifiers}
+                elementsize: targetint; {effective size of elements} );
+             sets: (basetype: p_symbolindex {set of basetype} );
+             files: (filebasetype: p_symbolindex {file of filebasetype} );
+             ptrs:
+               (ptrtype: p_symbolindex {^ptrtypename (field contains type)} ));
+
+    end;
+
+  {defines entries in the statement map file}
+
+  maprecordtype = (stmntrec, plabrec);
+  mapindex = targetint;
+
+  stmtrecord =
+    packed record
+      lineno: targetint; {line number in listing file}
+      pc: targetaddress; {relative runtime pc (filled in by code generator)}
+      filepos1, filepos2: targetint; {location within list file}
+      case opsystems of
+        rsx, rt, rsts, cpp:
+          (stmtno: targetint; {filled in by code} );
+        vms, unix, msdos, vdos, apollo:
+          (exit: boolean; {exit from procedure}
+           profile: boolean; {profile point}
+           double_real: boolean; {double precision real}
+           own_section: boolean; {module compiled with $own directive}
+           far_call: boolean; {far call used to enter procedure}
+           case typ: maprecordtype of
+             stmntrec:
+               (proclinenr: targetint; {line number in procedure}
+                filepos: targetint; {location within list file } );
+             plabrec: (recordnr: targetint); ) {record number in symbol
+                                                   file}
+    end;
+
+    dbg_stmtrecord = stmtrecord;
+    dbg_stmtfile = file of dbg_stmtrecord;
+
+  p_dbg_file_record =
+    record
+      case boolean of
+        true:
+          (sym: array [0..p_dbg_syp_span] of debugrecord { symbols } );
+        false: (str: packed array [0..p_dbg_str_span] of char);
+    end;
+{>>>}
+{<<<  more type}
+{ one fileremember is built for each input file, in order of opening }
+filerememberptr = ^fileremember;
+
+fileremember =
+  packed record
+    next: filerememberptr; {link to next}
+    offset: stringtableindex; {offset in stringtable of the file name}
+  end {fileremember} ;
+
+{ one errorrecord is built for each error within the program }
+errorrecord =
+  packed record
+    err: warning; {message to issue}
+    errcolumn: columnindex; {source column to mark}
+    errline: integer; {source line for error message}
+  end;
+
+{ one listrecord is built for each list and nolist switch }
+listrecord =
+  record
+    start: integer; {line to start listing}
+    count: integer; {number of lines to list}
+  end;
+
+{ one proctableentry is filled for every procedure }
+proctableentry =
+  packed record
+    charindex: stringtableindex; {index in stringfile to name of proc}
+    opensfile: boolean; {true if proc any files}
+    realfunction: boolean; {true if function returning real result}
+    farptrfunction: boolean; {true if function returning far pointer}
+    globaldeath: boolean; {true if proc deadly to globals}
+    isprocparam: boolean; {true if proc is used as a parametric procedure}
+    bodydefined: boolean; {true if this proc has a body}
+    intlevelrefs: boolean; {true if proc needs static link}
+    externallinkage: boolean; {true if proc was defined external}
+    any_calls: boolean; {this proc calls other user procs}
+    struct_calls: boolean; {this proc calls others with struct returns}
+    struct_ret: boolean; {this proc returns a struct value}
+    referenced: boolean; {true if ever referenced (after travrs)}
+    ownused: boolean; {true if this proc has own data}
+    farprocedure: boolean; {true if this is a far procedure}
+    needsframeptr: boolean; {true if procedure needs a frame pointer}
+    calllinkage: linkages; {type of procedure/function linkage}
+    registerfunction: 0..8; {size of function value in regs}
+    extref: var_index; {C only -- external name, if any}
+    backlink: proctableindex; {link to enclosing procedure}
+    charlen: 0..maxprocnamelen; {length of name (first maxprocnamelen
+                                 characters)}
+    levelspread: levelindex; {number of static hack instructions needed}
+    level: levelindex; {static level of this proc}
+  end;
+
+proctable_block = array [0..proctablespan] of proctableentry;
+
+{The cseregion table stores the lowest and highest addresses at each level
+ modified by a particular procedure.  The first entry always records global
+ variables modified, the second records own variables modified (if $own
+ specified).  This good stuff is saved for as many procedures
+ as possible.  Afterwards, only the "globaldeath" flag is recorded in the
+ proctable.  This information is used by travrs to minimize the number of
+ cses killed by a procedure call.
+}
+cseregionentry = array [boolean] of
+    record
+      low, high: addressrange;
+    end;
+
+vartableblockptr = ^vartableblock; {pointer to 1 page in vartable}
+vartablerec =
+  packed record {one entry in vartable}
+    extvaralloc: allockind; {use 'name', define 'name', etc}
+    initialized: boolean; {true sez it has been explicitly initialized}
+    referenced: boolean; {true sez it has been referenced in body}
+    aliased: boolean; {true says string followed use or define}
+    faraccess: boolean; {if 'far' references to be used}
+    odboffset: boolean; {is to be accounted for in odb vartab offsets}
+    charindex: stringtableindex; {index in stringfile to name of proc}
+    charlen: 0..maxprocnamelen; {length of name (first maxprocnamelen
+                                 characters)}
+    size: addressrange; {size of the variable, if known, zero otherwise}
+    offset: addressrange; {offset in psect; for "defined" variables only}
+  end;
+vartablerecptr = ^vartablerec; {to access one entry in vartable structure}
+vartableblock = array [0..maxvarentries] of vartablerec; {page in vartable}
+
+suffixindex = 1..suffixlength; {index into suffix}
+suffixtyp = packed array [suffixindex] of char; {filename suffix}
+cmdindex = 1..cmdlinelength; {index into a command line}
+cmdbuffer = packed array [cmdindex] of char; {holds command line}
+cmdptr = ^cmdbuffer; {save buffer on hostopsys = vdos }
+hdrline = packed array [1..130] of char; {header for list}
+
+file_kind = (source_file_kind, include_file_kind, list_file_kind,
+             prep_file_kind, obj_file_kind, mac_file_kind, env_file_kind,
+             sym_file_kind, stmt_file_kind, temp_file_kind);
+
+FilenameIndex = 0..filenamelen; {index into a filenamebuf}
+FilenameBuf = packed array [1..filenamelen] of char;
+
+FilenameListPtr = ^FilenameList;
+FilenameList =
+  record
+    next: FilenameListPtr;
+    arglen: FilenameIndex;
+    arg: FilenameBuf;
+  end;
+
+extension = packed array [1..maxextension] of char; {default extension}
+
+diskblock_ref = ^diskblock;
+diskblock = packed array [0..diskbufsize] of hostfilebyte;
+doublediskblock = packed array [0..doublediskbuflimit] of hostfilebyte;
+
+bytestream = file of diskblock;
+
+realstatus = (noerror, syntaxerror, underflowerr, overflowerr);
+realmodetype = 0..maxusword; {to specify the kind of real we want}
+
+{ this describes the local vars suitable for register allocation }
+localvartype =
+  record
+    offset: addressrange; { location of local var }
+    size: addressrange; {size of local var}
+    debugrecord: integer; { for fixing debug symbol file }
+    is_param: boolean; { parameter ? }
+    typ: types; { type of the var }
+  end;
+
+localfiletype = file of localvartype;
+
+{ types of optimizations enabled/disabled by genopts switch
+  The values after firstgenopt and before lastgenopt correspond
+  to inhibit bits passed in through the command line. For instance,
+  "-genmask 5" would disable register assignments by lifetimes
+  and hoisting. }
+gentypes = (lifetimes, {0 1 mask value }
+            propagation, {1 2 }
+            hoisting, {2 4 }
+            stuffing, {3 8 }
+            folding, {4 16 }
+            removedeadcode, {5 32 }
+            spare6, {6 64 }
+            spare7, {7 128 }
+            subexpressions, {8 256 }
+            tailmerging, {9 512 }
+            indexopts, {10 1024 }
+            spare11, {11 2048 }
+            peepholes, {12 4096 }
+            bitops, {13 8192 }
+            padding, {14 16384 }
+            spare15 {15 32768 }
+            );
+
+{ Support initialized data areas
+}
+section_kind = (data_section, string_section);
+
+data_control = {controls initialized data}
+  record
+    dfile: bytestream; {the file containing the data}
+    nextdbuf: 0..diskbufsize; {pointer into the block}
+    size: addressrange; {size of data actually written}
+  end;
+{>>>}
+
+{<<<}
+const
+  firstgenopt = lifetimes;
+  lastgenopt = spare15;
+
+{ Psect stuff; this is used to pass information from scan to
+  the VMS backend (putcode) about psect attributes. It is a linked list
+  of records containing the (lowercase, space filled) psect name, the
+  set of attributes which were explicitly set by the user and to which value.
+
+  Value is an integer for commodity; for boolean like attributes (all but
+  alignment, 0 means false and 1 means true.
+  For alignment, 0 = byte, 1 = word, 2 = long, 3 = quad and 4 = page.
+
+  I wish I could put this junk elsewhere...
+
+}
+{>>>}
+{<<<}
+type
+  psect_attr = (psect_ovl, psect_exe, psect_gbl, psect_lib, psect_pic,
+                psect_rd, psect_shr, psect_vec, psect_wrt, psect_rel,
+                psect_align);
+  psect_value = 0..4;
+  psect_attr_set = set of psect_attr;
+  psect_desc_ptr = ^psect_descr_block;
+  psect_descr_block =
+    packed record
+      name: packed array [1..maxprocnamelen] of char; {the psect name}
+      next: psect_desc_ptr;
+      user_set: psect_attr_set; {the user set those}
+      value: packed array [psect_attr] of psect_value;
+    end;
+{>>>}
+{<<<}
+var
+  { Logs switches found in the source file }
+  switches: array [switchindex] of switchentry;
+
+  switchcounters, {current values of switches}
+   originalswitches: switchcounterarray; {values at start of compilation}
+
+  switcheverplus: switcheverplusarray; {true if switch was ever set on}
+
+  errortable: array [errorindex] of errorrecord; {list of errors found}
+  fatalflag: boolean; {true if fatal error found}
+  anynonlocalgotos: boolean; {true if non-local goto's used in this unit}
+  lastswitch: switchindex; {last switch entry made by scan}
+  currentswitch: switchindex; {last switch entry activated in current pass}
+  lasterror: errorindex; {last error entered}
+  abortmsg: abortwarning; {reason for aborting}
+
+  listtable: array [listindex] of listrecord; {OLD listing control entries
+                                               list}
+  lastlist: integer; {last entry in listtable}
+
+  lastline: natural; {last line in program}
+  listcontrol: text; {listing control file for NEW lister}
+
+  debugfile: file of debugrecord;
+  newdebugfile: file of p_dbg_file_record;
+  locals: localfiletype; { locals var description file }
+
+  source: array [1..sourcedepth] of text; {files for including source}
+  sourcelevel: 0..sourcedepth; {current source include level}
+
+  stmtfile: dbg_stmtfile;
+
+  filename: FilenameBuf; {temp file name}
+  filename_length: FilenameIndex; {length of name in filename buffer}
+
+  outputname: packed array [1..maxprocnamelen] of char;
+  stringblkptrtbl: array [1..maxstringblks] of diskblock_ref;
+  stringblkptr: diskblock_ref; {pointer to string block}
+  stringfile: bytestream;
+  nextstringfile: 0..diskbufsize; {stringfile buffer pointer}
+  curstringblock: integer; {currently referenced string block}
+  stringfiledirty: boolean; {true if current string block changed}
+
+  stringtable: stringptr; {pointer to old-style string table}
+  new_stringtable: stringbasearray; {block of new-style string table pointers}
+  stringtabletop: stringindex; {next avail char in string table}
+
+  listing: text; {listing output file}
+
+  { 'Cache' is used by Analys, Travrs, Code for virtual memory }
+  cache: file of doublediskblock;
+
+  {references to standard identifiers when needed}
+  standardidtable: array [standardids] of hashindex;
+
+  targetintsize: integer; {size of an integer variable on the target}
+  targetrealsize: integer; {size of a real variable on the target}
+  targetmaxint: integer; {value of maxint on the target}
+  targetminint: integer; {value of minint on the target}
+  ptrsize: integer; {size of a pointer on the target}
+  globalsize: addressrange; {size of global variables}
+  inputoffset: addressrange; {offset of "input"}
+  ownsize: addressrange; {size of global variables}
+  definesize: addressrange; {size of "defined" (i.e. global) variables}
+  insertions: integer; {number of distinct variables found}
+  dum: integer; {used by main program}
+  startday, startmonth, startyear: integer; {starting date}
+  starthour, startmin, startsec: integer; {starting time of day}
+  istarthour, istartmin, istartsec: integer; {for monitoring execution time}
+  endhour, endmin, endsec: integer; {for monitoring execution time}
+
+  curstringbuf: boolean;
+  stringtablelimit: integer; {top of string + identifiers in string file}
+  consttablelimit: integer; {top of constant table in string file}
+  stringfilecount: integer; {top of strings in string file}
+  globalfiles: addressrange; {number of bytes allocated for input/output}
+
+  lastlabel: labelrange; {last internal label value assigned}
+
+  putlow, puthi, getlow, gethi: integer; { counts records put/got by current
+                                          pass }
+
+  returnlinksize: addressrange; {Length of return linkage for internal procs}
+  extreturnlinksize: addressrange; {Length of return linkage for externals}
+  farextreturnlinksize: addressrange; {Length of return linkage for far
+                                       externals}
+
+  { Table of procedure data -- built up by analys and used by coder }
+
+  proctable: array [0..old_proctablesize] of proctableentry;
+  new_proctable: array [0..procblocksmax] of ^proctable_block;
+  proctabletop: proctableindex;
+  blockref: proctableindex;
+  mainref: proctableindex; {for main entry in C}
+  import_table_ref: proctableindex;
+
+  { Table of regions of variables modified by procedures }
+
+  cseregiontable: array [cseregionindex] of cseregionentry;
+
+  vartable: array [1..maxvarptrs] of vartableblockptr;
+  lastvartableptr: 0..maxvarptrs;
+  lastvartableentry: var_index;
+  vartabodboffset: addressrange; {the last used offset in the vartable (VMS)}
+
+  {command interface data}
+  cmdlength: cmdindex; {length of command line}
+  cmdline: cmdbuffer; {actual command line}
+  savecmdline: cmdptr; {pointer to save buffer for listing when hostopsys =
+                        vdos }
+  fakelist: boolean; {fake a listing file to user's terminal}
+  SourceListHead: FilenameListPtr; {list of input filenames}
+  IncludeListHead: FilenameListPtr; {list of include pathnames or nil}
+  define_list_head: filenamelistptr; {macro defs from cmd line}
+  undef_list_head: filenamelistptr; {macro undefs from cmd line}
+
+  objname: FilenameListPtr; {object file name pointer or nil}
+  macname: FilenameListPtr; {macro file name pointer or nil}
+  listname: FilenameListPtr; {list file name pointer or nil}
+  envname: FilenameListPtr; {environment file name pointer or nil}
+  defname: FilenameListPtr; {define file name pointer or nil}
+  prepname: filenamelistptr; {preprocessor output file name}
+  stmtname: filenamelistptr; {statment file name}
+  symtabname: filenamelistptr; {symbol table name}
+  filerememberlist: filerememberptr; {input file name list head}
+
+  tblocknum: integer; {block number to trigger special diagnostics}
+  genset: packed set of gentypes; {set of optimizations to carry out in this
+                                   block}
+  overrideset: packed set of gentypes; {optimizations based on genoptmask}
+  genoptmask: integer; {codegen optimization mask}
+
+  { these are global to all due to overlay considerations}
+  curfile: integer; {number of current source file}
+  morefiles: boolean; {set if more source files}
+
+  early, late, today: integer; {Date rollover check}
+  current_line: integer; {used by error}
+  current_stmt: integer; {used by error}
+  workspace: integer; {for systems where size of temp files may be specified}
+
+  { Special VMS code parameters }
+
+  standardfilesreferenced: boolean; {there may be both own and global psects}
+
+  codesect_string: stringtableindex; {pointer to codesect name}
+  codesect_strlength: 0..linelen; {length of codesect name}
+
+  module_string: stringtableindex; {pointer to module name}
+  module_strlength: 0..linelen; {length of module name}
+
+  ownsect_string: stringtableindex; {pointer to ownsect name}
+  ownsect_strlength: 0..linelen; {length of ownsect name}
+
+  ident_string: stringtableindex; {pointer to ident name}
+  ident_strlength: 0..linelen; {length of ident name}
+
+  data_sect: array [section_kind] of data_control; {data section control}
+
+  { Special VERSAdos code parameters }
+  codesection: 0..15; {section under which to generate code}
+  datasection: 0..15; {read/write data section}
+  shortsection: boolean; {section is short}
+  objversion, objrevision: 0..255; {version and revision for object code}
+  identstring: stringindex; {pointer to ident text}
+  identstrlength: 0..linelen; {length of ident text}
+
+  { Special Pascal-F assembly parameters }
+  versnstring, {from $VERSN}
+   datestring, {from $DATE}
+   refnostring, {from $REFNO}
+   classstring: stringtableindex; {from $CLASS}
+  versnstrlength, datestrlength, refnostrlength, classstrlength: 0..linelen;
+  moduletype: (mainmodule, submodule, srmodule); {Pascal-F only}
+
+  { Special unix parameters }
+{  unixtarget: unixflavors;}
+
+  envirinfile: bytestream; {environment input file}
+  enviroutfile: bytestream; {defined environment output file}
+
+  m2_data_area: integer; {modula2 data area index}
+  string_space: var_index; {used in C compiler, needed so genblk will compile}
+  psect_desc_head: psect_desc_ptr; {likewise, for putcode}
+  scdlink: var_index; {static constructor/destructor vartable index}
+
+  { New debugger statement map control record.  Could be integrated with old
+    interface, but I left it separate on the theory that the old junk may
+    eventually disappear.
+  }
+
+  statement_file:
+    record
+      mapfile: dbg_stmtfile; {the file itself}
+      save_file: boolean; {save this file}
+      last_rec: unsignedint; {count of total records}
+    end;
+{>>>}

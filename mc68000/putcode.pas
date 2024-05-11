@@ -511,6 +511,7 @@ procedure findESDid;
 procedure putrelfile(data: unsigned);
 
   begin
+	writeln ('putrelfile');
 	write(objfile, data);
   end; {puttemp}
 
@@ -526,6 +527,8 @@ procedure flushtempbuffer;
 
 
   begin
+	writeln ('flushtempbuffer');
+
 	if nexttempbuffer > 0 then
 	  begin
 	  putrelfile((sectionno[currentsect] + 1) * 256 +
@@ -560,6 +563,8 @@ procedure flushtempbuffer;
 procedure putdata(data: unsigned);
 
   begin
+	writeln ('putdata');
+
 	tempbuffer[nexttempbuffer] := data and 65535;
 	nexttempbuffer := nexttempbuffer + 1;
 	if nexttempbuffer >= maxtempbuffer then flushtempbuffer;
@@ -569,6 +574,7 @@ procedure putdata(data: unsigned);
 procedure putbuffer(data: unsigned; reloc: boolean);
 
   begin
+	writeln ('putbuffer');
 	temprelocn[nexttemprelocn] := reloc;
 	nexttemprelocn := nexttemprelocn + 1;
 	putdata(data);
@@ -4539,6 +4545,7 @@ procedure openc;
 			apollo: assign(objfile, trim(string(filename)) + '.bi');
 			end {case} ;
 		vms:
+		  BEGIN
 		  case targetopsys of
 			vms: assign(objfile, trim(string(filename)) + '.obj/nocr');
 			rsx, rsts, rt: assign(objfile, trim(string(filename)) + '.obj');
@@ -4547,6 +4554,7 @@ procedure openc;
 			msdos: assign(objfile, trim(string(filename)) + '.obj/seek');
 			apollo: assign(objfile, trim(string(filename)) + '.bin/seek');
 			end;
+		  END;
 		msdos:
 		  case targetopsys of
 			vms: assign(binobjfile, trim(string(filename)) + '.obj');
@@ -4561,7 +4569,12 @@ procedure openc;
 			vms: assign(binobjfile, trim(string(filename)) + '.obj');
 			rsx, rsts, rt: assign(objfile, trim(string(filename)) + '.obj');
 			unix: assign(objfile, trim(string(filename)) + '.o');
-			vdos: assign(objfile, trim(string(filename)) + '.ro');
+			vdos: 
+			  BEGIN
+			  writeln ('openc outputobj ', hostopsys, ' ', targetopsys, ' assign openfile ', 
+					   filename, ' ', trim(string(filename)) + '.ro');
+			  assign(objfile, trim(string(filename)) + '.ro');
+			  end;
 			msdos: assign(objfile, trim(string(filename)) + '.obj');
 			apollo: assign(objfile, trim(string(filename)) + '.bin');
 			end;
