@@ -15,6 +15,7 @@
 out
 ro
 src
+simple
 
 # visual studio clutter
 *.sdf
