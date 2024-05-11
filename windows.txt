@@ -1,1 +1,0 @@
-fpc  -opascal2  -Fupascal -Fucommon -Fumc68000  pascal/main.pas
