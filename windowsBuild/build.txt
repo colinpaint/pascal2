@@ -1,3 +1,2 @@
 # windows fpc pascal2 build
-fpc  -opascal2  -Fu../pascal -Fu../common -Fu../mc68000  ../pascal/main.pas
-cp pascal2 ../pascal2.exe
+fpc  -o"../pascal2.exe"  -Fu"../pascal" -Fu"../common" -Fu"../mc68000" ../pascal/main.pas

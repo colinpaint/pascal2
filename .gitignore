@@ -12,6 +12,8 @@
 
 *.cmd
 
+pascal2.*
+
 out
 ro
 src
