@@ -15,3 +15,18 @@
 out
 ro
 src
+
+# visual studio clutter
+*.sdf
+*.suo
+*.dir
+*.vcxproj*
+*.sln
+.vs
+
+Win32
+x64
+Debug
+Release
+MinSizeRel
+RelWithDebInfo
