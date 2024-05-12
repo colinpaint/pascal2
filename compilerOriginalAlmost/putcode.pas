@@ -31,7 +31,6 @@ Update release version for PC-VV0-GS0 at 2.3.0.1
 %include 'hdrc.def';
 %include 'commc.def';
 
-{ commc2 }
 {<<<}
 procedure writech(ch: char);
 
@@ -654,7 +653,6 @@ procedure import_name(n: integer;
   end; {import_name}
 {>>>}
 
-{ putcode2 }
 {<<<}
 function get_from_sfile (loc, len: integer;
                          ident: boolean {true if in identifier section} ): linknametype;
@@ -2327,7 +2325,7 @@ procedure fixdiags;
   end; {fixdiags}
 {>>>}
 
-{ putcode }
+{<<<}
 const
   objreslen = objtypesx(0, {objnorm}
                         0, {objext}
@@ -2339,7 +2337,7 @@ const
                         0, {objign}
                         2 {objlong}
                         );
-  {[f+]}
+{>>>}
 
 {<<<}
 procedure put_diags;
@@ -2719,6 +2717,7 @@ procedure dumperrors;
   end; {dumperrors}
 {>>>}
 
+{<<<}
 procedure getnextnode;
 
 { localizes calls to "creadaccess", which accepts a nodeindex
@@ -2735,8 +2734,8 @@ procedure getnextnode;
       else creadaccess(currnode, n);
       end
   end; {getnextnode}
-
-
+{>>>}
+{<<<}
 procedure lookahead(n: integer);
 
 { Return with "p" pointing "n" nodes away.  Similar to "getnextnode".
@@ -2748,8 +2747,8 @@ procedure lookahead(n: integer);
     else if bigcompilerversion then p := ref(bignodetable[currnode + n])
     else creadaccess(currnode + n, p)
   end; {lookahead}
-
-
+{>>>}
+{<<<}
 procedure getoperand;
 
  { get another node and give error if not an operand }
@@ -2763,8 +2762,8 @@ procedure getoperand;
       currinst := nop; { to facilitate recovery }
       end { if }
   end; { getoperand }
-
-
+{>>>}
+{<<<}
 procedure getprevoperand(num: integer);
 
    { Fetch the node NUM nodes back and give error if not an operand.  This is
@@ -2790,9 +2789,8 @@ procedure getprevoperand(num: integer);
       currinst := nop; { to facilitate recovery }
       end { if }
   end; { getprevoperand }
-
-
-
+{>>>}
+{<<<}
 procedure writemaprecord(typ: maprecordtype;
                          flags, lineno, info: integer);
  { write record to map file }
@@ -2813,11 +2811,8 @@ procedure writemaprecord(typ: maprecordtype;
     put(stmtfile);
     lastmaprecord := lastmaprecord + 1;
   end;
-
-
-
-
-
+{>>>}
+{<<<}
 procedure writeobjline;
 
   var
@@ -2898,7 +2893,9 @@ procedure writeobjline;
       dumperrors; { if any }
       end;
   end; { writeobjline }
+{>>>}
 
+{<<<}
 function dump_externals;
 
     { Put out the debugger entries for externals.
@@ -3025,7 +3022,8 @@ function dump_externals;
 
     dump_externals := ctr;  { used by unix }
   end; {dump_externals}
-
+{>>>}
+{<<<}
 procedure dump_import_table;
 
 { Dump the import table for Modula2 to the object file and assembly listing.
@@ -3157,9 +3155,8 @@ writeln('NYI');
         writeobjline;
       end; {if modula2}
   end {dump_import_table} ;
-
-
-
+{>>>}
+{<<<}
 procedure setmodeonly;
 
 { scan the current operand node pointed to by "n" and set "mode" to
@@ -4097,9 +4094,8 @@ procedure setmodeonly;
           end;
         end; { case m }
   end; {setmodeonly}
-
-
-
+{>>>}
+{<<<}
 procedure seteffective;
 
 { call setmodeonly to get the current mode, then logically insert mode
@@ -4111,8 +4107,8 @@ procedure seteffective;
     setmodeonly;
     op := op or mode;
   end; { seteffective }
-
-
+{>>>}
+{<<<}
 procedure insertsize;
 
 { Insert size field into bits 6..7 of the main instruction word.
@@ -4124,8 +4120,8 @@ procedure insertsize;
     if datasize = word then op := op + 100B
     else if datasize = long then op := op + 200B;
   end; {insertsize}
-
-
+{>>>}
+{<<<}
 procedure insertreghi;
 
 { extract register specification from current operand node, shift left
@@ -4136,8 +4132,8 @@ procedure insertreghi;
   begin
     op := (n^.oprnd.reg and 7B) * 1000B + op;
   end; { insertreghi }
-
-
+{>>>}
+{<<<}
 procedure insertreglo;
 
 { extract register specification from current operand node,
@@ -4148,9 +4144,8 @@ procedure insertreglo;
   begin
     op := (n^.oprnd.reg and 7B) + op;
   end; { insertreglo }
-
-
-
+{>>>}
+{<<<}
 procedure writeinst(inst: insttype);
 
 { Write the 68000 mnemonic for the current instruction.
@@ -5403,9 +5398,8 @@ procedure writeinst(inst: insttype);
       end; {macro output}
 
   end; {writeinst}
-
-
-
+{>>>}
+{<<<}
 procedure writebitfield(reg, offset, width: integer);
 
 { Output the bit field descriptor for the 68020 bit field instructions.
@@ -5433,8 +5427,8 @@ procedure writebitfield(reg, offset, width: integer);
       writech('}');
       end;
   end;
-
-
+{>>>}
+{<<<}
 procedure writelastopnd;
 
 { Outputs the assembler code for the node currently pointed to by "n".
@@ -5937,8 +5931,8 @@ procedure writelastopnd;
           end; {case mode}
 
   end; {writelastopnd}
-
-
+{>>>}
+{<<<}
 procedure writeopnd;
 
 
@@ -5949,9 +5943,8 @@ procedure writeopnd;
       writech(',');
       end;
   end;
-
-
-
+{>>>}
+{<<<}
 function computedistance: addressrange;
 
 { The current node contains a (signed) number of instructions to branch
@@ -6005,8 +5998,8 @@ function computedistance: addressrange;
 
     computedistance := bytecount
   end; { computedistance }
-
-
+{>>>}
+{<<<}
 procedure writelabels;
 
 
@@ -6028,8 +6021,8 @@ procedure writelabels;
       end; { write additional labels }
 
   end; { write all labels }
-
-
+{>>>}
+{<<<}
 procedure doblocklabel;
 
 { Print a label in the assembler file to mark the start of a procedure.
@@ -6053,10 +6046,8 @@ procedure doblocklabel;
     writech('*');
     writeline;
   end; {doblocklabel}
-
-
-
-
+{>>>}
+{<<<}
 procedure DoBlockEntryCode;
 
   var
@@ -6145,8 +6136,8 @@ procedure DoBlockEntryCode;
       fixp := fixp^.fixuplink;
       end;
   end; { DoBlockEntryCode }
-
-
+{>>>}
+{<<<}
 procedure buildbranches;
 
 { Code to build a branch instruction.  This is pulled out of buildinstruction
@@ -6231,8 +6222,8 @@ procedure buildbranches;
       end
     else puterror(nolabelnode);
   end; {buildbranches}
-
-
+{>>>}
+{<<<}
 procedure buildfpbranches;
 
 { Code to build a 68881 branch instruction.
@@ -6295,8 +6286,8 @@ procedure buildfpbranches;
       end
     else puterror(nolabelnode);
   end; {buildfpbranches}
-
-
+{>>>}
+{<<<}
 procedure builddbxx;
 
   var
@@ -6339,8 +6330,8 @@ procedure builddbxx;
       end
     else puterror(nolabelnode);
   end; {builddbxx}
-
-
+{>>>}
+{<<<}
 procedure buildmovem(gen_fmovem: boolean);
 
   var
@@ -6481,10 +6472,8 @@ procedure buildmovem(gen_fmovem: boolean);
                                               to long }
 
   end; {buildmovem}
-
-
-
-
+{>>>}
+{<<<}
 procedure BuildInstruction;
 
   var
@@ -7309,9 +7298,8 @@ procedure BuildInstruction;
         otherwise puterror(unknowninst)
         end; {case inst}
   end {BuildInstruction} ;
-
-
-
+{>>>}
+{<<<}
 procedure PutCode;
 
 { Output a block of either (or both) macro code or object code.  This simply
@@ -7480,3 +7468,4 @@ procedure PutCode;
     if nowdiagnosing then put_diags;
     highcode := sectionpc[codesect];
   end {PutCode} ;
+{>>>}

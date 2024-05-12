@@ -1,2 +1,4 @@
 # windows fpc pascal2 build
 fpc -FE"."  -o"pascal2.exe"  -Fu"pascal" -Fu"common" -Fu"mc68000" pascal/main.pas
+#linux
+fpc -FE"."  -o"pascal2"  -Fu"pascal" -Fu"common" -Fu"mc68000" pascal/main.pas

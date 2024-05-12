@@ -1,5 +1,5 @@
 {[b+,l+,a+,o=80]}
-
+{<<<}
 { NOTICE OF COPYRIGHT AND OWNERSHIP OF SOFTWARE:
 
   Copyright (C) 1984 Oregon Software, Inc.
@@ -23,29 +23,23 @@
 Update release version for PC-VV0-GS0 at 2.3.0.1
 
 }
+{>>>}
 
 unit putcode;
 
 interface
-
 uses config, product, hdr, hdrc, t_c, utils, commonc, sysutils;
-
 procedure putcode;
-
 procedure openc;
-
 procedure closec;
-
 procedure initmac;
-
 procedure initdiags;
-
 procedure fixdefines;
-
 procedure fixmac;
 
 implementation
 
+{<<<}
 const
   objreslen:objtypesx= (0, {objnorm}
 						0, {objext}
@@ -57,9 +51,10 @@ const
 						0, {objign}
 						2 {objlong}
 						);
+{>>>}
   {[f+]}
 
-
+{<<<}
 procedure supname(libroutine: libroutines;
 				  var s: string);
 
@@ -226,7 +221,8 @@ procedure supname(libroutine: libroutines;
 	  end;
 
   end {supname} ;
-
+{>>>}
+{<<<}
 procedure findlabelpc(labelno: integer; {label to match}
 					  var forwardlab: integer {forward reference} );
  { Search the label table for a match on the label number parameter.
@@ -255,9 +251,9 @@ procedure findlabelpc(labelno: integer; {label to match}
 	  forwardlab := 1;
 	  end;
   end; { findlabelpc }
+{>>>}
 
-
-
+{<<<}
 { The following procedures perform formatted output to the assembler file.
   The routines which accept strings of 4 and 8 characters will suppress
   trailing blanks.  The "writeint" routine outputs decimal integers with
@@ -269,15 +265,16 @@ procedure findlabelpc(labelno: integer; {label to match}
   through these routines; usually these are writeln's of long strings, where
   the value of "column" will not be affected.  See "initmac" for examples.
 }
-
+{>>>}
+{<<<}
 procedure writech(ch: char);
 
   begin
 	write(MacFile, ch);
 	column := column + 1;
   end {writech};
-
-
+{>>>}
+{<<<}
 procedure writestr(s: string);
 
   var i, j: integer;
@@ -285,8 +282,8 @@ procedure writestr(s: string);
   begin
 	write(MacFile, s);
   end {writestr};
-
-
+{>>>}
+{<<<}
 procedure writeint(v: integer);
 
   var
@@ -311,8 +308,8 @@ procedure writeint(v: integer);
 	  bufptr := bufptr - 1;
 	until bufptr = 0;
   end; {writeint}
-
-
+{>>>}
+{<<<}
 procedure WriteHex(v: unsigned {value to write} );
 
 { Write an unsigned value to the macro file as a hexadecimal number.
@@ -338,8 +335,8 @@ procedure WriteHex(v: unsigned {value to write} );
 	write(MacFile, hexbuf);
 	column := column + 4;
   end {WriteHex} ;
-
-
+{>>>}
+{<<<}
 procedure WriteHexLong(v: unsigned {value to write} );
 
 { Write an unsigned 32 bit value to the macro file as a hexadecimal number.
@@ -363,8 +360,8 @@ procedure WriteHexLong(v: unsigned {value to write} );
 	write(MacFile, hexbuf);
 	column := column + 4;
   end; {WriteHexLong}
-
-
+{>>>}
+{<<<}
 procedure reposition(col: columnrange);
 
   begin
@@ -374,16 +371,16 @@ procedure reposition(col: columnrange);
 	while column < col do
 	  writech(' ');
   end {reposition};
-
-
+{>>>}
+{<<<}
 procedure writeline;
 
   begin
 	writeln(MacFile);
 	column := 1;
   end {writeline};
-
-
+{>>>}
+{<<<}
 function uppercase(ch: char): char;
 
   begin
@@ -391,8 +388,9 @@ function uppercase(ch: char): char;
 	  uppercase := chr(ord(ch) - ord('a') + ord('A'))
 	else uppercase := ch;
   end; {uppercase}
+{>>>}
 
-
+{<<<}
 procedure allocfixup;
 
   begin
@@ -413,8 +411,8 @@ procedure allocfixup;
 								  dumper }
 	  end;
   end;  { allocfixup }
-
-
+{>>>}
+{<<<}
   procedure absfixup(var ref: fixupptr; len: integer);
 
 { Generate a fixup record for an absolute fixup.  This is expected to
@@ -433,8 +431,9 @@ procedure allocfixup;
 	  fixuplen := len;
 	  end;
   end; {absfixup}
+{>>>}
 
-
+{<<<}
   procedure insertnewESD;
 
 { The global variable "newESD" is to be inserted into the ESDtable.
@@ -446,8 +445,8 @@ procedure allocfixup;
 	  ESDtable[nextESD] := newESD;  { that's easy enough }
 	  nextESD := nextESD + 1;   { may actually be beyond linker's range }
 	end;  { insertnewESD }
-
-
+{>>>}
+{<<<}
 procedure findESDid;
 
 { Compute the ESDid for the given entry.  If not found, insert it.
@@ -507,15 +506,17 @@ procedure findESDid;
 	if not found then
 	  insertnewESD;   { nextESD bumps, but not ESDid }
   end; { findESDid }
+{>>>}
 
+{<<<}
 procedure putrelfile(data: unsigned);
 
   begin
 	writeln ('putrelfile');
 	write(objfile, data);
   end; {puttemp}
-
-
+{>>>}
+{<<<}
 procedure flushtempbuffer;
 
 { Write the current contents of the tempbuffer to the temporary object
@@ -558,8 +559,8 @@ procedure flushtempbuffer;
 	  nexttemprelocn:= 0;
 	  end;
   end; {flushtempbuffer}
-
-
+{>>>}
+{<<<}
 procedure putdata(data: unsigned);
 
   begin
@@ -569,8 +570,8 @@ procedure putdata(data: unsigned);
 	nexttempbuffer := nexttempbuffer + 1;
 	if nexttempbuffer >= maxtempbuffer then flushtempbuffer;
   end;
-
-
+{>>>}
+{<<<}
 procedure putbuffer(data: unsigned; reloc: boolean);
 
   begin
@@ -579,8 +580,9 @@ procedure putbuffer(data: unsigned; reloc: boolean);
 	nexttemprelocn := nexttemprelocn + 1;
 	putdata(data);
   end;  {putbuffer}
+{>>>}
 
-
+{<<<}
 procedure newsection(newsect: section {section to switch to} );
 
 { Change sections to "newsect".  If there is any data accumulated for the
@@ -605,8 +607,8 @@ procedure newsection(newsect: section {section to switch to} );
 	  currentpc := sectionpc[currentsect];
 	  end;
   end; {newsection}
-
-
+{>>>}
+{<<<}
 procedure seekstringfile(n: integer {byte to access});
 
 { Do the equivalent of a "seek" on the string file.  This sets the
@@ -639,8 +641,8 @@ procedure seekstringfile(n: integer {byte to access});
 	  end;
 	nextstringfile := n mod (diskbufsize + 1);
   end {seekstringfile} ;
-
-
+{>>>}
+{<<<}
 function getstringfile: hostfilebyte;
 
 { move stringfile buffer pointer to next entry.  'get' is called
@@ -664,8 +666,8 @@ function getstringfile: hostfilebyte;
 
 	nextstringfile := nextstringfile + 1;
   end {getstringfile} ;
-
-
+{>>>}
+{<<<}
 procedure writeprocname(procn: proctableindex; {number of procedure to copy}
 						len: integer {characters to write} );
 
@@ -688,9 +690,9 @@ procedure writeprocname(procn: proctableindex; {number of procedure to copy}
 	  if language = pascal then writech(uppercase(chr(getstringfile)))
 	  else writech(chr(getstringfile));
   end {writeprocname} ;
+{>>>}
 
-
-
+{<<<}
 { Diagnostic table generation.
 
   The diagnostic tables are generated to allow a walkback by line and
@@ -710,8 +712,8 @@ procedure writeprocname(procn: proctableindex; {number of procedure to copy}
   The tables are bitwise packed and highly encoded.  The format for various
   pieces is given in the individual routines generating them.
 }
-
-
+{>>>}
+{<<<}
 procedure diag_word(value: unsigned {value to put} );
 
 { Put a single word of diagnostic data to the macro and object files.
@@ -736,8 +738,8 @@ procedure diag_word(value: unsigned {value to put} );
 	  putbuffer(value, false);
 	currentpc := currentpc + 2;
   end; {diag_word}
-
-
+{>>>}
+{<<<}
 procedure diag_bits(value: unsigned; {value to generate}
 					length: bits {number of bits in value} );
 
@@ -769,9 +771,8 @@ procedure diag_bits(value: unsigned; {value to generate}
 		nextdiagbit := nextdiagbit + 1;
 	  end;
   end; {diag_bits}
-
-
-
+{>>>}
+{<<<}
 procedure initdiags;
 
 { Initialize the diagnostic code, called only if diagnostics are
@@ -838,21 +839,21 @@ var kludge: integer; {to get around a purposeful range error}
 	  currentpc := 22
 	else currentpc := 10; {length of header data}
   end; {initdiags}
-
-
-  procedure WriteSymbolName(name: string);
-  { Write a symbol name string to the macro file. }
-  var i: 0..maxprocnamelen;
-  begin
-	i := 0;
-	while (i < length(name)) do begin
-	  i := i + 1;
-	  if language = pascal then writech(uppercase(name[i]))
-	  else writech(name[i]);
-	  end;
-  end;
-
-
+{>>>}
+{<<<}
+procedure WriteSymbolName(name: string);
+{ Write a symbol name string to the macro file. }
+var i: 0..maxprocnamelen;
+begin
+  i := 0;
+  while (i < length(name)) do begin
+	i := i + 1;
+	if language = pascal then writech(uppercase(name[i]))
+	else writech(name[i]);
+	end;
+end;
+{>>>}
+{<<<}
 procedure import_name(n: integer;
 					  var name: string);
 
@@ -879,10 +880,10 @@ procedure import_name(n: integer;
 	  name[t + 1] := ' ';
 	  end;
   end; {import_name}
-
+{>>>}
 {[a+]}
 
-
+{<<<}
 function get_from_sfile(loc, len: integer;
 						ident: boolean {true if in identifier section}
 					   ): linknametype;
@@ -916,8 +917,8 @@ function get_from_sfile(loc, len: integer;
 
   get_from_sfile := linkname;
   end; {get_from_sfile}
-
-
+{>>>}
+{<<<}
 procedure CopySFile;
 
 { Copy the string table and constant table from the string file to
@@ -1066,9 +1067,8 @@ procedure CopySFile;
 	  writeline;
 	  end;
   end {CopySFile} ;
-
-
-
+{>>>}
+{<<<}
 procedure InitMac;
 
 { Generate preliminary pieces of the macro file. In the process, some
@@ -1228,8 +1228,8 @@ procedure InitMac;
 	highcode := currentpc; { initialize code address }
 	lastobjpc := currentpc; { required if dumping object code }
   end {InitMac} ;
-
-
+{>>>}
+{<<<}
 procedure FixMac;
 
 { Clean up the macro file.  There isn't much to do for this file.
@@ -1553,8 +1553,8 @@ procedure FixMac;
 	  writeline;
 	  end;
   end; {FixMac}
-
-
+{>>>}
+{<<<}
 procedure FixDefines;
 
   { Put out an XDEF to the object file for each non-referenced "define"
@@ -1581,7 +1581,9 @@ procedure FixDefines;
 		end; { for }
 	  end; { lastvartableentry > 0 }
   end; {fixdefines}
+{>>>}
 
+{<<<}
 procedure puterror(err: puterrortype);
 
 
@@ -1590,8 +1592,8 @@ procedure puterror(err: puterrortype);
 	pcerrortable[lineerrors] := err;
 	totalputerr := totalputerr + 1;
   end; {puterror}
-
-
+{>>>}
+{<<<}
 procedure dumperrors;
 
   var
@@ -1629,9 +1631,8 @@ procedure dumperrors;
 		end; {case err}
 	  end; {for loop}
   end; {dumperrors}
-
-
-
+{>>>}
+{<<<}
 procedure getnextnode;
 
 { localizes calls to "creadaccess", which accepts a nodeindex
@@ -1647,8 +1648,8 @@ procedure getnextnode;
 	  if bigcompilerversion then n := @(bignodetable[currnode]);
 	  end
   end; {getnextnode}
-
-
+{>>>}
+{<<<}
 procedure lookahead(n: integer);
 
 { Return with "p" pointing "n" nodes away.  Similar to "getnextnode".
@@ -1659,8 +1660,8 @@ procedure lookahead(n: integer);
 	if currnode + n > lastnode then puterror(endofnodes)
 	else if bigcompilerversion then p := @(bignodetable[currnode + n]);
   end; {lookahead}
-
-
+{>>>}
+{<<<}
 procedure getoperand;
 
  { get another node and give error if not an operand }
@@ -1674,8 +1675,8 @@ procedure getoperand;
 	  currinst := nop; { to facilitate recovery }
 	  end { if }
   end; { getoperand }
-
-
+{>>>}
+{<<<}
 procedure getprevoperand(num: integer);
 
    { Fetch the node NUM nodes back and give error if not an operand.  This is
@@ -1700,7 +1701,9 @@ procedure getprevoperand(num: integer);
 	  currinst := nop; { to facilitate recovery }
 	  end { if }
   end; { getprevoperand }
+{>>>}
 
+{<<<}
 procedure writeobjline;
 
 { DRB object code hacked out }
@@ -1708,7 +1711,8 @@ procedure writeobjline;
 begin
   if switcheverplus[outputmacro] then writeline;
 end;
-
+{>>>}
+{<<<}
 procedure writeinst(inst: insttype);
 
 { Write the 68000 mnemonic for the current instruction.
@@ -2739,9 +2743,8 @@ procedure writeinst(inst: insttype);
 	  end; {macro output}
 
   end; {writeinst}
-
-
-
+{>>>}
+{<<<}
 procedure writebitfield(reg, offset, width: integer);
 
 { Output the bit field descriptor for the 68020 bit field instructions.
@@ -2769,8 +2772,8 @@ procedure writebitfield(reg, offset, width: integer);
 	  writech('}');
 	  end;
   end;
-
-
+{>>>}
+{<<<}
 procedure writelastopnd;
 
 { Outputs the assembler code for the node currently pointed to by "n".
@@ -2797,6 +2800,7 @@ procedure writelastopnd;
 	}
 
 
+  {<<<}
   procedure write_scale;
 
 
@@ -2809,6 +2813,7 @@ procedure writelastopnd;
 			writeint(scale);
 			end;
 	end;
+  {>>>}
 
 
   begin {writelastopnd}
@@ -3273,8 +3278,8 @@ procedure writelastopnd;
 		  end; {case mode}
 
   end; {writelastopnd}
-
-
+{>>>}
+{<<<}
 procedure writeopnd;
 
 
@@ -3285,9 +3290,8 @@ procedure writeopnd;
 	  writech(',');
 	  end;
   end;
-
-
-
+{>>>}
+{<<<}
 function computedistance: addressrange;
 
 { The current node contains a (signed) number of instructions to branch
@@ -3338,8 +3342,8 @@ function computedistance: addressrange;
 
 	computedistance := bytecount
   end; { computedistance }
-
-
+{>>>}
+{<<<}
 procedure writelabels;
 
 
@@ -3361,8 +3365,9 @@ procedure writelabels;
 	  end; { write additional labels }
 
   end; { write all labels }
+{>>>}
 
-
+{<<<}
 procedure doblocklabel;
 
 { Print a label in the assembler file to mark the start of a procedure.
@@ -3386,10 +3391,8 @@ procedure doblocklabel;
 	writech('*');
 	writeline;
   end; {doblocklabel}
-
-
-
-
+{>>>}
+{<<<}
 procedure DoBlockEntryCode;
 
   var
@@ -3476,8 +3479,8 @@ procedure DoBlockEntryCode;
 	  fixp := fixp^.fixuplink;
 	  end;
   end; { DoBlockEntryCode }
-
-
+{>>>}
+{<<<}
 procedure buildbranches;
 
 { Code to build a branch instruction.  This is pulled out of buildinstruction
@@ -3516,8 +3519,8 @@ procedure buildbranches;
 	  end
 	else puterror(nolabelnode);
   end; {buildbranches}
-
-
+{>>>}
+{<<<}
 procedure buildfpbranches;
 
 { Code to build a 68881 branch instruction.
@@ -3552,8 +3555,8 @@ procedure buildfpbranches;
 	  end
 	else puterror(nolabelnode);
   end; {buildfpbranches}
-
-
+{>>>}
+{<<<}
 procedure builddbxx;
 
   var
@@ -3590,8 +3593,8 @@ procedure builddbxx;
 	  end
 	else puterror(nolabelnode);
   end; {builddbxx}
-
-
+{>>>}
+{<<<}
 procedure buildmovem(gen_fmovem: boolean);
 
   var
@@ -3708,10 +3711,8 @@ procedure buildmovem(gen_fmovem: boolean);
 	else puterror(badsource);
 
   end; {buildmovem}
-
-
-
-
+{>>>}
+{<<<}
 procedure BuildInstruction;
 
   var
@@ -4307,9 +4308,8 @@ procedure BuildInstruction;
 		otherwise puterror(unknowninst)
 		end; {case inst}
   end {BuildInstruction} ;
-
-
-
+{>>>}
+{<<<}
 procedure PutCode;
 
 { Output a block of either (or both) macro code or object code.  This simply
@@ -4469,7 +4469,9 @@ procedure PutCode;
 	sectionpc[codesect] := currentpc;
 	highcode := sectionpc[codesect];
   end {PutCode} ;
+{>>>}
 
+{<<<}
 procedure openc;
 
 { Open files for code generator.
@@ -4569,9 +4571,9 @@ procedure openc;
 			vms: assign(binobjfile, trim(string(filename)) + '.obj');
 			rsx, rsts, rt: assign(objfile, trim(string(filename)) + '.obj');
 			unix: assign(objfile, trim(string(filename)) + '.o');
-			vdos: 
+			vdos:
 			  BEGIN
-			  writeln ('openc outputobj ', hostopsys, ' ', targetopsys, ' assign openfile ', 
+			  writeln ('openc outputobj ', hostopsys, ' ', targetopsys, ' assign openfile ',
 					   filename, ' ', trim(string(filename)) + '.ro');
 			  assign(objfile, trim(string(filename)) + '.ro');
 			  end;
@@ -4592,8 +4594,8 @@ procedure openc;
 	  end {/object} ;
 
   end {openc} ;
-
-
+{>>>}
+{<<<}
 procedure closec;
 
 { Close object and macro files.
@@ -4606,3 +4608,4 @@ procedure closec;
   end {closec} ;
 
   end.
+{>>>}

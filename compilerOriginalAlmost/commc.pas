@@ -60,6 +60,7 @@ Update release version for PC-VV0-GS0 at 2.3.0.1
 %include 'hdrc.def';
 %include 'commc.def';
 
+{<<<}
 procedure accessblk{blockwanted: integer (index of desired block) };
 
 { Make the block with index "blockwanted" available at the top of
@@ -122,7 +123,8 @@ procedure accessblk{blockwanted: integer (index of desired block) };
       blocksin[1] := temp;
     end;
   end {accessblk} ;
-
+{>>>}
+{<<<}
 
 procedure creadaccess{i: nodeindex; (node wanted)
                      var p: nodeptr (provides access to desired node) };
@@ -195,8 +197,8 @@ procedure creadaccess{i: nodeindex; (node wanted)
         end;
       end;
   end {creadaccess} ;
-
-
+{>>>}
+{<<<}
 procedure cwriteaccess{i: nodeindex; (node to access)
                       var p: nodeptr (provides access to the node) };
 
@@ -241,8 +243,8 @@ procedure cwriteaccess{i: nodeindex; (node to access)
         end;
       end;
   end {cwriteaccess} ;
-
-
+{>>>}
+{<<<}
 function getvartableptr{(i: integer (index in vartable)): vartablerecptr};
 
 { Returns a pointer to the ith vartable entry.
@@ -253,18 +255,18 @@ function getvartableptr{(i: integer (index in vartable)): vartablerecptr};
   getvartableptr := ref(vartable[i div (maxvarentries + 1) + 1]^
                                 [i mod (maxvarentries + 1)]);
   end {getvartableptr} ;
+{>>>}
 
 
 { Pseudo file handling procedures.
-
   Since many of the fields in a pseudo-instruction are unused for many
   of the instructions,  the pseudo-file is packed to eliminate the
   redundant fields.
-
   This code gets and unpacks the pseudo-file into pseudocode elements.
 }
-
-
+{<<<}
+{>>>}
+{<<<}
 procedure getpseudobuff;
 
 { Get and unpack the next element in the pseudofile, leaving the result
@@ -368,8 +370,8 @@ procedure getpseudobuff;
         end;
       end;
   end {getpseudobuff} ;
-
-
+{>>>}
+{<<<}
 procedure unpackpseudofile;
 
 { Get the next pseudo-instruction in "pseudobuf" and distribute some
@@ -390,8 +392,8 @@ procedure unpackpseudofile;
       target := pseudoinst.oprnds[3];
       end;
   end {unpackpseudofile} ;
-
-
+{>>>}
+{<<<}
 procedure getreal {var rval: realarray};
 
 { Get a real number from the pseudo instruction.  We are making the assumption
@@ -411,8 +413,8 @@ procedure getreal {var rval: realarray};
     kluge.ival[3] := pseudoinst.oprnds[3];
     rval := kluge.rval;
   end;
-
-
+{>>>}
+{<<<}
 procedure realtoints
                     {rval: realarray; (value to convert)
                      len: natural; (length desired)
@@ -437,8 +439,8 @@ procedure realtoints
       tr := rval[3];
       i2 := tr * 65536 + rval[4];
     end; {realtoints}
-
-
+{>>>}
+{<<<}
 procedure refglobal
                    {m: modes; (usercall, supportcall, etc.)
                     what: integer (which routine or other global) };
@@ -505,8 +507,8 @@ procedure refglobal
         end;
       end;
   end {refglobal} ;
-
-
+{>>>}
+{<<<}
 procedure refsymbol
                    {n: string8 (symbol name) };
 
@@ -555,8 +557,8 @@ procedure refsymbol
         end;
       end;
   end {refsymbol} ;
-
-
+{>>>}
+{<<<}
 procedure defglobal
                    {m: modes; (usercall, supportcall, etc.)
                     what: integer; (which routine or other global)
@@ -589,8 +591,8 @@ procedure defglobal
       lastdef := g;
       end;
   end {defglobal} ;
-
-
+{>>>}
+{<<<}
 procedure defsymbol{sym: string8; (symbol name)
                     sect: commonlong_reloc_type; (which section)
                     where: addressrange (where within the section) };
@@ -621,8 +623,8 @@ procedure defsymbol{sym: string8; (symbol name)
       lastdef := g;
       end;
   end {defsymbol} ;
-
-
+{>>>}
+{<<<}
 procedure newnode;
 
 { Increment "lastnode", checking for instruction table overflow.  Sets
@@ -637,8 +639,8 @@ node.
     else if bigcompilerversion then lastptr := ref(bignodetable[lastnode])
     else cwriteaccess(lastnode, lastptr);
   end {newnode} ;
-
-
+{>>>}
+{<<<}
 procedure geninst{i: insttype; (instruction to generate)
                   l: operandrange; (number of operands)
                   olen: datarange (length of operands) };
@@ -670,8 +672,8 @@ zero.
       oprndlength := olen;
       end;
   end {geninst} ;
-
-
+{>>>}
+{<<<}
 procedure genoprnd{o: operand (operand to generate) };
 
 { Generates the given operand.  If the operand contains an offset
@@ -743,8 +745,8 @@ dependent on the stack, tempcount is set appropriately.
               end;
       end {with lastptr^} ;
   end {genoprnd} ;
-
-
+{>>>}
+{<<<}
 procedure genlongword{data: unsigned};
 
 { Generates a longword of constant data.  Currently only used for mc68881
@@ -758,8 +760,8 @@ procedure genlongword{data: unsigned};
     lastptr^.kind := datanode;
     lastptr^.data := data;
   end; {genlongword}
-
-
+{>>>}
+{<<<}
 procedure genlabeldelta{l1, l2: integer (base and offset labels) };
 
 { Generates a case table entry label, the 16-bit difference between l1 and
@@ -777,8 +779,8 @@ l2.
       targetlabel := l2;
       end;
   end {genlabeldelta} ;
-
-
+{>>>}
+{<<<}
 procedure genlabel{l: integer (label number) };
 
 {generate a labelnode to label "l".
@@ -798,8 +800,8 @@ procedure genlabel{l: integer (label number) };
       proclabel := false;
       end;
   end {genlabel} ;
-
-
+{>>>}
+{<<<}
 procedure genbr{inst: insttype; (branch to generate)
                 l: integer (label number) };
 
@@ -821,8 +823,8 @@ been delayed, it is enabled again at this point.
       end;
     adjustdelay := false;
   end {Genbr} ;
-
-
+{>>>}
+{<<<}
 procedure genrelbr{inst: insttype; (branch to generate)
                    reladd: integer (branch over reladd instructions) };
 
@@ -842,8 +844,8 @@ not nodes, to simplify peephole optimization routines.
       distance := reladd;
       end;
   end {genrelbr} ;
-
-
+{>>>}
+{<<<}
 procedure gendb{i: insttype; (db-style inst to gen)
                 regkey: keyindex; (contains register portion of inst)
                 l: integer (label to branch to) };
@@ -858,8 +860,8 @@ procedure gendb{i: insttype; (db-style inst to gen)
     genlabel(l);
     lastptr^.labelcost := word;
   end {gendb} ;
-
-
+{>>>}
+{<<<}
 Procedure gen1{i: insttype;
                datalen: datarange;
                dst: keyindex};
@@ -873,8 +875,8 @@ Procedure gen1{i: insttype;
     geninst(i, 1, datalen);
     genoprnd(keytable[dst].oprnd);
   end {gen1} ;
-
-
+{>>>}
+{<<<}
 procedure gen2{i: insttype; (the instruction to generate)
                datalen: datarange; (length of operation in bytes)
                src, dst: keyindex (keytable indices of operands) };
@@ -889,8 +891,8 @@ procedure gen2{i: insttype; (the instruction to generate)
     genoprnd(keytable[src].oprnd);
     genoprnd(keytable[dst].oprnd);
   end {gen2} ;
-
-
+{>>>}
+{<<<}
 procedure gen_bf_inst{i: insttype; (the instruction to generate)
                       datalen: datarange; (length of operation in bits)
                       src, dst: keyindex (keytable indices of operands)
@@ -920,8 +922,8 @@ procedure gen_bf_inst{i: insttype; (the instruction to generate)
       genoprnd(keytable[offset].oprnd);
       end;
   end {gen_bf_inst} ;
-
-
+{>>>}
+{<<<}
 procedure genadcon
                   {m: modes; (what kind of thing we're referring to)
                    what: integer; (which one, or its location)
@@ -966,8 +968,8 @@ procedure genadcon
         end {with lastptr^} ;
       end;
   end {genadcon} ;
-
-
+{>>>}
+{<<<}
 procedure gensymboladcon
                         {n: string8 (symbol name) };
 
@@ -990,8 +992,8 @@ procedure gensymboladcon
         end {with lastptr^} ;
       end;
   end {gensymboladcon} ;
-
-
+{>>>}
+{<<<}
 procedure setcommonkey;
 
 { Check the key specified in the pseudoinstruction just read, and if
@@ -1040,8 +1042,8 @@ procedure setcommonkey;
       instmark := lastnode + 1;
       end;
   end {setcommonkey} ;
-
-
+{>>>}
+{<<<}
 procedure settemp{lth: datarange; (length of data referenced)
                   m: modes; (args are the same as for setvalue)
                   reg, indxr: regindex;
@@ -1092,8 +1094,8 @@ procedure settemp{lth: datarange; (length of data referenced)
       oprnd.commonlong_reloc := commonlong_reloc;
       end;
   end {settemp} ;
-
-
+{>>>}
+{<<<}
 procedure settempreg{lth: datarange; (length of data referenced)
                      m: modes; (normally dreg, areg or fpreg)
                      reg: regindex (associated register) };
@@ -1106,8 +1108,8 @@ procedure settempreg{lth: datarange; (length of data referenced)
   begin {settempreg}
     settemp(lth, m, reg, 0, false, 0, 0, 1, unknown);
   end; {settempreg}
-
-
+{>>>}
+{<<<}
 procedure settempareg{reg: regindex (areg to set new key temp to) };
 
 { Shorthand call to settemp when only mode and register fields are
@@ -1118,8 +1120,8 @@ procedure settempareg{reg: regindex (areg to set new key temp to) };
   begin {settempareg}
     settemp(long, areg, reg, 0, false, 0, 0, 1, unknown);
   end; {settempareg}
-
-
+{>>>}
+{<<<}
 procedure settempdreg{lth: datarange; (length of data referenced)
                     reg: regindex (associated register) };
 
@@ -1132,8 +1134,8 @@ procedure settempdreg{lth: datarange; (length of data referenced)
     settemp(lth, dreg, reg, 0, false, 0, 0, 1, unknown);
     keytable[tempkey].oprnd.flavor := int;
   end {settempdreg} ;
-
-
+{>>>}
+{<<<}
 procedure settempfpreg{reg: regindex (fpreg to set new key temp to) };
 
 { Shorthand call to settemp when only mode and register fields are
@@ -1146,8 +1148,8 @@ procedure settempfpreg{reg: regindex (fpreg to set new key temp to) };
     keytable[tempkey].oprnd.flavor := float;
     keytable[tempkey].len := 12;
   end; {settempfpreg}
-
-
+{>>>}
+{<<<}
 procedure settempimmediate{lth: datarange; (length of data referenced)
                            value: integer (literal value to set) };
 
@@ -1158,8 +1160,8 @@ procedure settempimmediate{lth: datarange; (length of data referenced)
   begin {settempimmediate}
     settemp(lth, immediate, 0, 0, false, value, 0, 1, unknown);
   end {settempimmediate} ;
-
-
+{>>>}
+{<<<}
 procedure settempsymbol{sym: string8 (symbol name) };
 
 { Shorthand call to settemp for symbol references.
@@ -1170,8 +1172,8 @@ procedure settempsymbol{sym: string8 (symbol name) };
     settemp(long, symbol, 0, 0, false, 0, 0, 1, unknown);
     keytable[tempkey].oprnd.name := sym;
   end {settempsymbol} ;
-
-
+{>>>}
+{<<<}
 procedure settempadcon{m: modes;
                        offset: integer;
                        commonlong_reloc: commonlong_reloc_type} ;
@@ -1229,8 +1231,8 @@ procedure settempadcon{m: modes;
       keytable[tempkey].knowneven := true;
       end;
   end {settempadcon} ;
-
-
+{>>>}
+{<<<}
 procedure delete{m: nodeindex; (first node to delete)
                  n: nodeindex (number of nodes to delete) };
 
@@ -1347,8 +1349,8 @@ procedure delete{m: nodeindex; (first node to delete)
         end;
       end;
   end {delete} ;
-
-
+{>>>}
+{<<<}
 procedure aligntemps;
 
 { Make sure run-time stack aligns with the keytable model.
@@ -1365,8 +1367,8 @@ procedure aligntemps;
         stackoffset := - offset;
         end;
   end {aligntemps} ;
-
-
+{>>>}
+{<<<}
 procedure newtemp{size: addressrange (size of temp to allocate) };
 
 { Create a new temp. Temps are allocated from the top of the keys,
@@ -1427,14 +1429,12 @@ procedure newtemp{size: addressrange (size of temp to allocate) };
         end;
       end;
   end {newtemp} ;
-
+{>>>}
 
 { Runtime environment utilities.
-
   Used to manipulate the temp stack at runtime.
 }
-
-
+{<<<}
 procedure adjustoffsets{firstnode: nodeindex; (first node of scan)
                         change: boolean (true if offset is to change) };
 
@@ -1526,8 +1526,8 @@ procedure adjustoffsets{firstnode: nodeindex; (first node of scan)
     stackcounter := stackcounter + 1;
 
   end {adjustoffsets} ;
-
-
+{>>>}
+{<<<}
 procedure zaptemps{cnt: integer; (Number of temps to delete)
                    change: boolean (set if temp was never used) };
 
@@ -1550,8 +1550,8 @@ procedure zaptemps{cnt: integer; (Number of temps to delete)
         adjustoffsets(instmark, change);
         end;
   end {zaptemps} ;
-
-
+{>>>}
+{<<<}
 procedure returntemps{cnt: integer (number of temps to return) };
 
 { Return temps from the stack, decrementing the book-keeping fields of
@@ -1563,8 +1563,8 @@ procedure returntemps{cnt: integer (number of temps to return) };
     zaptemps(cnt, false);
     stackoffset := - keytable[stackcounter].oprnd.offset;
   end {returntemps} ;
-
-
+{>>>}
+{<<<}
 function uselesstemp {: boolean };
 
 { True if the top temp on the tempstack is no longer needed.
@@ -1576,8 +1576,8 @@ function uselesstemp {: boolean };
                    context[contextsp].lastbranch) and
                    (keytable[stackcounter].refcount = 0);
   end {uselesstemp} ;
-
-
+{>>>}
+{<<<}
 procedure adjusttemps;
 
 { Remove any temps which are no longer required.  In the process, the
@@ -1626,9 +1626,8 @@ procedure adjusttemps;
       gen2(add, targetintsize, tempkey + 1, tempkey);
       end;
   end {adjusttemps} ;
-
-
-
+{>>>}
+{<<<}
 procedure definelabel{l: integer (label number to define) };
 
 { Define a label with label number "l" pointing to "lastnode".
@@ -1664,8 +1663,8 @@ procedure definelabel{l: integer (label number to define) };
         end;
       end;
   end {definelabel} ;
-
-
+{>>>}
+{<<<}
 procedure definelastlabel;
 
 { Define the label with number "lastlabel".  This is used by the code
@@ -1679,8 +1678,8 @@ procedure definelastlabel;
     definelabel(lastlabel);
     lastlabel := lastlabel - 1;
   end {definelastlabel} ;
-
-
+{>>>}
+{<<<}
 function findlabel{labno: integer (desired label number) : labelindex };
 
 { Searches the label table for label "labno" and returns the index of
@@ -1700,8 +1699,9 @@ function findlabel{labno: integer (desired label number) : labelindex };
     until labeltable[l].labno = labno;
     findlabel := l;
   end {findlabel} ;
+{>>>}
 
-
+{<<<}
 procedure callsupport{bn: libroutines (support routine to call) };
 
  { Call the support library. }
@@ -1730,8 +1730,8 @@ procedure callsupport{bn: libroutines (support routine to call) };
     gen1(jsr, 0, tempkey);
     paramlist_started := false; {reset the switch}
   end {callsupport} ;
-
-
+{>>>}
+{<<<}
 procedure supname{libroutine: libroutines;
                   var s: packed array[lo..hi: integer] of char};
 
@@ -1910,8 +1910,8 @@ procedure supname{libroutine: libroutines;
 
     for i := 11 to hi do s[i] := ' ';
   end {supname} ;
-
-
+{>>>}
+{<<<}
 function instlength{n: nodeindex (must refer to an instruction) : integer};
 
 { Return the byte length of the given instruction.  This code assumes
@@ -2059,3 +2059,4 @@ function instlength{n: nodeindex (must refer to an instruction) : integer};
 
     instlength := len;
   end {instlength} ;
+{>>>}
