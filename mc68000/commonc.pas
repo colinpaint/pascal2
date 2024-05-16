@@ -1,4 +1,6 @@
 {[b+,l+]}
+{<<<}
+
 { NOTICE OF COPYRIGHT AND OWNERSHIP OF SOFTWARE:
 
   Copyright 1977, 1978, 1979, 1980, 1981, 1982, 1983, 1984
@@ -18,24 +20,18 @@
  Purpose:
 Update release version for PC-VV0-GS0 at 2.3.0.1
 }
-
+{>>>}
 unit commonc;
-
 interface
-
 uses config, hdr, utils, hdrc, t_c;
 
-
-
 procedure insertnewesd;
-
 procedure findesdid;
-
 function getvartableptr(i: integer {index in vartable}): vartablerecptr;
-
 
 implementation
 
+{<<<}
   procedure insertnewesd;
 
 { The global variable "newesd" is to be inserted into the esdtable.
@@ -47,8 +43,8 @@ implementation
       esdtable[nextesd] := newesd;  { that's easy enough }
       nextesd := nextesd + 1;   { may actually be beyond linker's range }
     end;  { insertnewesd }
-
-
+{>>>}
+{<<<}
 procedure findesdid;
 
 { Compute the esdid for the given entry.  If not found, insert it.
@@ -108,7 +104,8 @@ procedure findesdid;
     if not found then
       insertnewesd;   { nextesd bumps, but not esdid }
   end; { findesdid }
- 
+{>>>}
+{<<<}
 function getvartableptr(i: integer {index in vartable}): vartablerecptr;
 
 { Returns a pointer to the ith vartable entry.
@@ -118,5 +115,6 @@ function getvartableptr(i: integer {index in vartable}): vartablerecptr;
   getvartableptr := @(vartable[i div (maxvarentries + 1) + 1]^
                                 [i mod (maxvarentries + 1)]);
   end {getvartableptr} ;
+{>>>}
 
 end.

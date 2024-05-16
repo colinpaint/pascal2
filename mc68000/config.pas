@@ -1,4 +1,5 @@
 {[l-,b+]*******************************************************}
+{<<<}
 {                                                              }
 {                    P a s c a l - I I                         }
 {                                                              }
@@ -17,10 +18,10 @@
   program is copied in original or in modified form, ALL COPIES OF THIS
   PROGRAM MUST DISPLAY THIS NOTICE OF COPYRIGHT AND OWNERSHIP IN FULL.
 
-  Configuration parameters for the Versados native compiler. 
+  Configuration parameters for the Versados native compiler.
 
-  Release version: 0045  Level: 1  Date: 21-Nov-1990 15:15:48 
-  Processor: MC68000 
+  Release version: 0045  Level: 1  Date: 21-Nov-1990 15:15:48
+  Processor: MC68000
 
   Last modified by KRIS on 21-Nov-1990 15:15:48
 
@@ -28,8 +29,7 @@
   Update release version for PC-VV0-GS0 at 2.3.0.1
 
 }
-
-
+{>>>}
 
 unit config;
 
@@ -45,7 +45,6 @@ interface
 }
 
 type
-
   shortint = integer; {DRB fpc defaults to 8 bits}
   integer = longint; {DRB fpc defaults to 16 bits}
 

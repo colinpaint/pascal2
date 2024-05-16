@@ -1,4 +1,5 @@
 {[b+,l+]}
+{<<<}
 
 { NOTICE OF COPYRIGHT AND OWNERSHIP OF SOFTWARE:
 
@@ -7,9 +8,9 @@
 
   This program is the property of Oregon Software.  The program or
   parts of it may be copied and used only as provided under a signed
-  license agreement with Oregon Software.  Any support purchased from 
-  Oregon Software does not apply to user-modified programs.  All copies 
-  of this program must display this notice and all copyright notices. 
+  license agreement with Oregon Software.  Any support purchased from
+  Oregon Software does not apply to user-modified programs.  All copies
+  of this program must display this notice and all copyright notices.
 
   Release version: 0045  Level: 1  Date: 21-Nov-1990 15:19:24
   Processor: ~processor~
@@ -29,13 +30,13 @@ Update release version for PC-VV0-GS0 at 2.3.0.1
   new versions will probably be required for each different
   target or host machine.
 }
+{>>>}
 
 unit mda;
-
 interface
-
 uses config, hdr, utils, hdra, a_t;
 
+{<<<}
 procedure alloc(align: alignmentrange; {variable alignment}
                 length: addressrange; {length of variable}
                 var spacesize: addressrange; {size of data space}
@@ -49,8 +50,8 @@ procedure alloc(align: alignmentrange; {variable alignment}
   "spacesize" addressing units allocated.  The address of the
   newly allocated field is returned in "varloc", and "spacesize"
   is updated to include the new field.}
-
-
+{>>>}
+{<<<}
 procedure allocpacked(align: alignmentrange; {variable alignment}
                       length: addressrange; {length of variable}
                       var spacesize: addressrange; {size of data space}
@@ -70,7 +71,8 @@ procedure allocpacked(align: alignmentrange; {variable alignment}
   desired.
 }
 
-
+{>>>}
+{<<<}
 procedure getallocdata(form: entryptr; {type being allocated}
                        varkind: nametype; {type of field or var}
                        packedresult: boolean; {result goes in packed field}
@@ -92,8 +94,8 @@ procedure getallocdata(form: entryptr; {type being allocated}
   the entire data space.  "Packedresult" and "spacelen" are included for
   information.
 }
-
-
+{>>>}
+{<<<}
 function arraysizeof(f: entryptr; {form to get size of}
                      packedresult: boolean {set if packed } ): addressrange;
 
@@ -102,8 +104,8 @@ function arraysizeof(f: entryptr; {form to get size of}
 
   "Packedresult" determines if the size is in bits or addressing units.
 }
-
-
+{>>>}
+{<<<}
 procedure packedstore(eltloc: addressrange; {rel address of this field}
                       eltsize: addressrange; {size of this field}
                       baseloc: addressrange; {rel address of first buffer}
@@ -117,8 +119,8 @@ procedure packedstore(eltloc: addressrange; {rel address of this field}
   "full" is set when "pbuf1" is full, and should be written.  "Baseloc" is
   the address (in bits) of the start of "pbuf1"
 }
-
-
+{>>>}
+{<<<}
 function roundpackedsize(spacesize: addressrange; {rounded space}
                          packedresult: boolean {true if packed record} ):
  addressrange;
@@ -127,8 +129,8 @@ function roundpackedsize(spacesize: addressrange; {rounded space}
   the type is packed.  Used to simplify code generator, which wishes to
   use unit-move instructions for structure assignments.
 }
-
-
+{>>>}
+{<<<}
 procedure possibletemp(off: addressrange;
                        vartype: index;
                        debugrec: integer);
@@ -155,7 +157,8 @@ procedure possibletemp(off: addressrange;
     Last Modified: 7/16/85
 
 }
-
+{>>>}
+{<<<}
 function forcealign(size: addressrange; {value to align}
                     alignment: addressrange; {requirement}
                     packedresult: boolean {size is in bits} ): addressrange;
@@ -163,28 +166,33 @@ function forcealign(size: addressrange; {value to align}
 { Forces "size" to the next higher multiple of "alignment".
   Used to overcome limitations built into much contemporary hardware.
 }
-
+{>>>}
+{<<<}
 function lower(f: entryptr {form to check} ): integer;
 
 { Returns the lower bound of "f".  This is meaningful only for
   scalar types.
 }
-
+{>>>}
+{<<<}
 function upper(f: entryptr {form to check} ): integer;
 
 { Returns the upper bound of "f".  This is meaningful only for
   scalar types.
 }
-
+{>>>}
+{<<<}
 function bits(i: integer {value to find size of} ): integer;
 
 { Returns the number of bits needed to contain the value of i.
 }
+{>>>}
 
-  var
-    b: integer; {Accumulates number of bits}
-    value: unsignedint; {Temp so can use a register and shift inst}
+var
+  b: integer; {Accumulates number of bits}
+  value: unsignedint; {Temp so can use a register and shift inst}
 
+{<<<}
 function sizeof(f: entryptr; {Form to get size of}
                 packedresult: boolean {set if packed value} ): addressrange;
 
@@ -192,7 +200,8 @@ function sizeof(f: entryptr; {Form to get size of}
   specified by "f".  If "packedresult" is set, this is in bits, otherwise
   it is in addressing units.
 }
-
+{>>>}
+{<<<}
 function alignmentof(f: entryptr; {form to check}
                      packedresult: boolean {result is packed} ):
  alignmentrange;
@@ -203,9 +212,10 @@ function alignmentof(f: entryptr; {form to check}
   kluge causes trouble with packed types, so is deleted if the result
   is to be used in a packed structure.
 }
+{>>>}
 
 implementation
-
+{<<<}
 function alignmentof(f: entryptr; {form to check}
                      packedresult: boolean {result is packed} ):
  alignmentrange;
@@ -222,8 +232,8 @@ function alignmentof(f: entryptr; {form to check}
     else if packedresult then alignmentof := f^.align * bitsperunit
     else alignmentof := (f^.align + bitsperunit - 1) div bitsperunit;
   end {alignmentof} ;
-
-
+{>>>}
+{<<<}
 procedure alloc(align: alignmentrange; {variable alignment}
                 length: addressrange; {length of variable}
                 var spacesize: addressrange; {size of data space}
@@ -253,8 +263,8 @@ procedure alloc(align: alignmentrange; {variable alignment}
       end
     else overflowed := true;
   end; {alloc}
-
-
+{>>>}
+{<<<}
 procedure allocpacked(align: alignmentrange; {variable alignment}
                       length: addressrange; {length of variable}
                       var spacesize: addressrange; {size of data space}
@@ -271,7 +281,7 @@ procedure allocpacked(align: alignmentrange; {variable alignment}
   is updated to include the new field.  "Unusedspace" is set
   if some space was left due to the allocation strategy.  This
   can be used to modify earlier fields for better access if
-  desired.  
+  desired.
 
   ***M68000***
   Alignment is normally done bitwise, except when the resulting
@@ -302,8 +312,8 @@ procedure allocpacked(align: alignmentrange; {variable alignment}
       end
     else overflowed := true;
   end; {allocpacked}
-
-
+{>>>}
+{<<<}
 procedure getallocdata(form: entryptr; {type being allocated}
                        varkind: nametype; {type of field or var}
                        packedresult: boolean; {result goes in packed field}
@@ -359,8 +369,8 @@ procedure getallocdata(form: entryptr; {type being allocated}
       end;
     maxalign := max(maxalign, fieldalign);
   end; {getallocdata}
-
-
+{>>>}
+{<<<}
 function arraysizeof(f: entryptr; {form to get size of}
                      packedresult: boolean {set if packed } ): addressrange;
 
@@ -395,8 +405,8 @@ function arraysizeof(f: entryptr; {form to get size of}
     if s <> 0 then arraysizeof := s
     else arraysizeof := 1;
   end {arraysizeof} ;
-
-
+{>>>}
+{<<<}
 procedure packedstore(eltloc: addressrange; {rel address of this field}
                       eltsize: addressrange; {size of this field}
                       baseloc: addressrange; {rel address of first buffer}
@@ -438,9 +448,8 @@ procedure packedstore(eltloc: addressrange; {rel address of this field}
       else pbuf1 := pbuf1 + val;
       end;
   end; {packedstore}
-
-
-
+{>>>}
+{<<<}
 function roundpackedsize(spacesize: addressrange; {rounded space}
                          packedresult: boolean {true if packed record} ):
  addressrange;
@@ -456,10 +465,8 @@ function roundpackedsize(spacesize: addressrange; {rounded space}
       roundpackedsize := forcealign(spacesize, unitsize, true)
     else roundpackedsize := spacesize;
   end {roundpackedsize} ;
-
-
-
-
+{>>>}
+{<<<}
 procedure possibletemp(off: addressrange;
                        vartype: index;
                        debugrec: integer);
@@ -509,7 +516,8 @@ procedure possibletemp(off: addressrange;
         end;
       end;
   end {possibletemp} ;
-
+{>>>}
+{<<<}
 function forcealign(size: addressrange; {value to align}
                     alignment: addressrange; {requirement}
                     packedresult: boolean {size is in bits} ): addressrange;
@@ -524,7 +532,8 @@ function forcealign(size: addressrange; {value to align}
       size := ((size + alignment - 1) div alignment) * alignment;
     forcealign := size;
   end {forcealign} ;
-
+{>>>}
+{<<<}
 function lower(f: entryptr {form to check} ): integer;
 
 { Returns the lower bound of "f".  This is meaningful only for
@@ -538,7 +547,8 @@ function lower(f: entryptr {form to check} ): integer;
       else if typ = subranges then lower := lowerord
       else lower := 0;
   end {lower} ;
-
+{>>>}
+{<<<}
 function upper(f: entryptr {form to check} ): integer;
 
 { Returns the upper bound of "f".  This is meaningful only for
@@ -557,9 +567,8 @@ function upper(f: entryptr {form to check} ): integer;
         otherwise upper := targetmaxint
         end
   end {upper} ;
-
-
-
+{>>>}
+{<<<}
 function bits(i: integer {value to find size of} ): integer;
 
 { Returns the number of bits needed to contain the value of i.
@@ -584,7 +593,8 @@ function bits(i: integer {value to find size of} ): integer;
       bits := b;
       end;
   end {bits} ;
-
+{>>>}
+{<<<}
 function sizeof(f: entryptr; {Form to get size of}
                 packedresult: boolean {set if packed value} ): addressrange;
 
@@ -624,5 +634,5 @@ function sizeof(f: entryptr; {Form to get size of}
         end
     else sizeof := (f^.size + bitsperunit - 1) div bitsperunit;
   end {sizeof} ;
-
+{>>>}
 end.

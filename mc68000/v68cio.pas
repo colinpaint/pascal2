@@ -1,6 +1,7 @@
 {$nomain}
 {$nopointer}
 {[b+]}
+{<<<}
 { NOTICE OF COPYRIGHT AND OWNERSHIP OF SOFTWARE:
 
   Copyright (C) 1986 Oregon Software, Inc.
@@ -8,9 +9,9 @@
 
   This program is the property of Oregon Software.  The program or
   parts of it may be copied and used only as provided under a signed
-  license agreement with Oregon Software.  Any support purchased from 
-  Oregon Software does not apply to user-modified programs.  All copies 
-  of this program must display this notice and all copyright notices. 
+  license agreement with Oregon Software.  Any support purchased from
+  Oregon Software does not apply to user-modified programs.  All copies
+  of this program must display this notice and all copyright notices.
 
 
   Release version: 0045 Level: 1
@@ -25,6 +26,7 @@
 Update release version for PC-VV0-GS0 at 2.3.0.1
 
 }
+{>>>}
 
 CONST
   maxlength = 4;
@@ -52,16 +54,13 @@ TYPE
 FUNCTION z_b134: codepointer;
   nonpascal;
 
-
 PROCEDURE z_b133(VAR a, b: number);
   nonpascal;
-
 
 PROCEDURE z_b129(VAR l: line;
                  VAR len, site1, site2: integer);
   external;
-
-
+{<<<}
 procedure z_b129;
 
   VAR
@@ -119,12 +118,12 @@ procedure z_b129;
       site2 := n[1];
       END;
   END;
+{>>>}
 
 
 PROCEDURE z_b130(VAR start, stop: integer);
   external;
-
-
+{<<<}
 procedure z_b130;
 
   VAR
@@ -172,3 +171,4 @@ procedure z_b130;
       ELSE stop := x.enddate;
       END;
   END;
+{>>>}
