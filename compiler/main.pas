@@ -1,4 +1,5 @@
 {[b+]}
+{<<<}
 { NOTICE OF COPYRIGHT AND OWNERSHIP OF SOFTWARE:
 
   Copyright (C) 1986, 1987 Oregon Software, Inc.
@@ -6,10 +7,11 @@
 
   This program is the property of Oregon Software.  The program or
   parts of it may be copied and used only as provided under a signed
-  license agreement with Oregon Software.  Any support purchased from 
-  Oregon Software does not apply to user-modified programs.  All copies 
-  of this program must display this notice and all copyright notices. 
+  license agreement with Oregon Software.  Any support purchased from
+  Oregon Software does not apply to user-modified programs.  All copies
+  of this program must display this notice and all copyright notices.
 }
+{>>>}
 
 program pascal2;
 
@@ -18,8 +20,7 @@ uses config, hdr, utils, csi, scan, sd, analys, travrs, putcode, code, list;
 label
   99; { Target for fatal errors }
 
-
-
+{<<<}
 procedure resetswitches;
 
  { reset switch table between passes }
@@ -33,7 +34,8 @@ procedure resetswitches;
     getlow := 0;
     gethi := 0;
   end;
-
+{>>>}
+{<<<}
 procedure setoptions;
 
  { set overall options based on genmask and command line }
@@ -101,42 +103,39 @@ procedure setoptions;
       if switcheverplus[test] then writeln;
       end;
   end {setoptions} ;
+{>>>}
+{<<<}
+{procedure settime;}
 
-{DRB
-procedure settime;
+  {begin}
+    {if switcheverplus[timing] then}
+      {timestamp(dum, dum, dum, istarthour, istartmin, istartsec);}
+
+  {end;}
+{>>>}
+{<<<}
+{procedure printtime(pass: packed array [l..h: shortint] of char);}
+
+  {var}
+    {deltasec, deltamin, deltahour: integer; }
+    {i: shortint; }
 
 
-  begin {settime}
-    if switcheverplus[timing] then
-      timestamp(dum, dum, dum, istarthour, istartmin, istartsec);
-  end {settime} ;
-
-
-procedure printtime(pass: packed array [l..h: shortint] of char);
-
-  var
-    deltasec, deltamin, deltahour: integer; {to compute time per pass}
-    i: shortint; {induction}
-
-
-  begin {printtime}
-    if switcheverplus[timing] then
-      begin
-      timestamp(dum, dum, dum, deltahour, deltamin, deltasec);
-      if deltahour < istarthour then deltahour := deltahour + 24;
-      deltasec := max(deltasec - istartsec + 60 * ((deltamin - istartmin) + 60 *
-                      (deltahour - istarthour)), 1);
-      for i := l to h do write(pass[i]);
-      writeln(' ', deltasec: 1, ' sec., ', lastline: 1, ' lines, ',
-              (lastline * 60) div deltasec: 1, ' lines/min.');
-      end;
-  end {printtime} ;
-}
-
-
+  {begin }
+    {if switcheverplus[timing] then}
+      {begin}
+      {timestamp(dum, dum, dum, deltahour, deltamin, deltasec);}
+      {if deltahour < istarthour then deltahour := deltahour + 24;}
+      {deltasec := max(deltasec - istartsec + 60 * ((deltamin - istartmin) + 60 *}
+                      {(deltahour - istarthour)), 1);}
+      {for i := l to h do write(pass[i]);}
+      {writeln(' ', deltasec: 1, ' sec., ', lastline: 1, ' lines, ',}
+              {(lastline * 60) div deltasec: 1, ' lines/min.');}
+      {end;}
+  {end;}
+{>>>}
 
 begin {main}
-
   current_stmt := 0; { used by error }
   current_line := 0; { used by error }
   fatalflag := false;
@@ -146,11 +145,11 @@ begin {main}
   genoptmask := 0;
   csi.csi;
   setoptions;
+
 {DRB
   if switcheverplus[timing] then
     timestamp(dum, dum, dum, starthour, startmin, startsec);
-
-  opentemp; { open temp files }
+  opentemp; 
 }
 
   originalswitches := switchcounters;
@@ -163,14 +162,15 @@ begin {main}
     end
   else lastlist := 0;
 
-{DRB  settime;}
+  {DRB  settime;}
   if scanalys then scan.scan1;
   analys.analys;
   if scanalys then scan.scan2;
-{DRB
+
+  {DRB
   if switcheverplus[timing] and switcheverplus[details] then
     printtime('analys');
-}
+  }
   if (lasterror = 0) and (switcheverplus[outputmacro] or
      switcheverplus[outputobj]) then
     begin
@@ -187,10 +187,7 @@ begin {main}
     end;
 
 99:
-
-  closeall; { List will need stringfile open, so close all files except
-             stringfile. }
-
+  closeall; { List will need stringfile open, so close all files except stringfile. }
   if (lastlist > 0) then
     begin
     if (listtable[lastlist].count = 0) then

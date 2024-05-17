@@ -1,4 +1,5 @@
 {[b+]}
+{<<<}
 { NOTICE OF COPYRIGHT AND OWNERSHIP OF SOFTWARE:
 
   Copyright (C) 1986 Oregon Software, Inc.
@@ -6,9 +7,9 @@
 
   This program is the property of Oregon Software.  The program or
   parts of it may be copied and used only as provided under a signed
-  license agreement with Oregon Software.  Any support purchased from 
-  Oregon Software does not apply to user-modified programs.  All copies 
-  of this program must display this notice and all copyright notices. 
+  license agreement with Oregon Software.  Any support purchased from
+  Oregon Software does not apply to user-modified programs.  All copies
+  of this program must display this notice and all copyright notices.
 
 
   Release version: 0045 Level: 1
@@ -24,28 +25,22 @@ Update release version for PC-VV0-GS0 at 2.3.0.1
 
 }
 
+{>>>}
 unit p2rdreal;
 
 interface
-
-uses config;
+  uses config;
 
 const
-
   maxrealwords  =     4 ;       { maximum number of words per real }
   maxrealbytes  =     8 ;       { maximum number of bytes per real }
   maxrealbits   =    64 ;       { maximum number of bits per real }
 
 type
-
   nextch_t = function(firstch: boolean): char;
-
   realarray     = packed array [1..maxrealwords] of word ;
-
   realstatus    = ( noerror , syntaxerror , underflowerr , overflowerr) ;
-
   realmodetype      = 0..maxusword ;
-
 
 procedure p2ReadReal(nextch: nextch_t;
                      var result: realarray;
@@ -54,7 +49,7 @@ procedure p2ReadReal(nextch: nextch_t;
                      var isdouble: boolean);
 
 implementation
-
+{<<<}
 const
   {[f-]}
   bitsperbyte   =     8 ;       { number of bits per binary byte }
@@ -70,9 +65,9 @@ const
   halfwordsize  = 32768 ;       { wordsize div 2 }
   halfmaxword   = 32767 ;       { maxword div 2 }
   {[f+]}
-
+{>>>}
+{<<<}
 type
-
   {[f-]}
   byte          = 0..maxbyte ;
   word          = 0..maxword ;
@@ -102,9 +97,9 @@ type
                   , SNaNClass           { signalling NaN }
                   ) ;
 {[f+]}
+{>>>}
 
-
-
+{<<<}
 procedure p2ReadReal(nextch: nextch_t;
                      var result: realarray;
                      var errorcode: realstatus;
@@ -378,7 +373,7 @@ if isdouble then
 
     for i := 1 to realwords do value[i] := 0;
     end;
-
+
 
 
   begin { p2ReadReal }
@@ -539,7 +534,7 @@ if isdouble then
     { Now that 'E' or 'D' is passed, we can set the exponent limits.
     }
     initialize;
-
+
 
     {----- scanning is complete; commence conversion -----}
 
@@ -641,7 +636,7 @@ if isdouble then
         digits[1] := carry;
         inttail := 1;
         end { DecExp <= 0 } ;
-
+
 
 { The number now has at least one byte of converted binary integer.
   Truncate the binary integer if there are excess bytes, or call
@@ -862,5 +857,5 @@ if isdouble then
       for i := 1 to realwords do result[i] := value[i];
 
   end { p2ReadReal } ;
-
+{>>>}
 end.

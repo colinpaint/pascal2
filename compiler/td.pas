@@ -1,4 +1,5 @@
 {[b+]}
+{<<<}
 { NOTICE OF COPYRIGHT AND OWNERSHIP OF SOFTWARE:
 
   Copyright (C) 1986 Oregon Software, Inc.
@@ -6,9 +7,9 @@
 
   This program is the property of Oregon Software.  The program or
   parts of it may be copied and used only as provided under a signed
-  license agreement with Oregon Software.  Any support purchased from 
-  Oregon Software does not apply to user-modified programs.  All copies 
-  of this program must display this notice and all copyright notices. 
+  license agreement with Oregon Software.  Any support purchased from
+  Oregon Software does not apply to user-modified programs.  All copies
+  of this program must display this notice and all copyright notices.
 
 
   Release version: 0045 Level: 1
@@ -22,13 +23,14 @@
  Purpose:
 Update release version for PC-VV0-GS0 at 2.3.0.1
 }
+{>>>}
 
 var
   highestkey: integer;
   nm: packed array [1..255] of char;
   dumping: boolean;
 
-
+{<<<}
 procedure initsets;
 
 { Set up the nokeydata and oneoperand sets.
@@ -53,8 +55,8 @@ procedure initsets;
                   setfile, stacktarget, wrbin, wrbool, wrchar, wrint, wrreal,
                   wrst, wrxstr];
   end {initsets} ;
-
-
+{>>>}
+{<<<}
 procedure getpseudobuff;
 
 { Get and unpack the next element in the pseudofile, leaving the result
@@ -144,8 +146,8 @@ procedure getpseudobuff;
         end;
       end;
   end {getpseudobuff} ;
-
-
+{>>>}
+{<<<}
 procedure dumppseudo;
 
 
@@ -423,6 +425,7 @@ procedure dumppseudo;
                 3, ') ', oprnds[1]: 5, ' ', oprnds[2]: 5, ' ', oprnds[3]: 5);
       end;
   end {dumppseudo} ;
+{>>>}
 
 
 begin {td}

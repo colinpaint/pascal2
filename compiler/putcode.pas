@@ -28,17 +28,16 @@ Update release version for PC-VV0-GS0 at 2.3.0.1
 unit putcode;
 
 interface
-uses config, product, hdr, hdrc, t_c, utils, commonc, sysutils;
-procedure putcode;
-procedure openc;
-procedure closec;
-procedure initmac;
-procedure initdiags;
-procedure fixdefines;
-procedure fixmac;
+  uses config, product, hdr, hdrc, t_c, utils, commonc, sysutils;
+  procedure putcode;
+  procedure openc;
+  procedure closec;
+  procedure initmac;
+  procedure initdiags;
+  procedure fixdefines;
+  procedure fixmac;
 
 implementation
-
 {<<<}
 const
   objreslen:objtypesx= (0, {objnorm}
